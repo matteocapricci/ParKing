@@ -1,25 +1,33 @@
 import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import Box from '@mui/material/Box';
+import Rating from '@mui/material/Rating';
+import Typography from '@mui/material/Typography';
 
-function App() {
+export default function BasicRating() {
+  const [value, setValue] = React.useState(2);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box
+      sx={{
+        '& > legend': { mt: 2 },
+      }}
+    >
+      <Typography component="legend">Controlled</Typography>
+      <Rating
+        name="simple-controlled"
+        value={value}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+        }}
+      />
+      <Typography component="legend">Read only</Typography>
+      <Rating name="read-only" value={value} readOnly />
+      <Typography component="legend">Disabled</Typography>
+      <Rating name="disabled" value={value} disabled />
+      <Typography component="legend">No rating given</Typography>
+      <Rating name="no-value" value={null} />
+    </Box>
   );
 }
-
-export default App;
