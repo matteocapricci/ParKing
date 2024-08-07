@@ -5,6 +5,7 @@ function DefaultHomepage() {
 
     return (
         <div>
+            <Header page={"defaultHomepage"}/>
             <Footer />
         </div>
     );
