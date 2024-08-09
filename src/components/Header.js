@@ -25,9 +25,7 @@ function Header({page}) {
 
     const headerStyle = {
         backgroundColor: '#add8e6',
-        bottom: 0,
         width: '100%',
-        marginTop: '5px',
         marginBottom: '5px',
     };
 
@@ -39,9 +37,8 @@ function Header({page}) {
     };
 
     const textStyle = {
-        width: '160px',
-        height: '90px',
-        padding: '5px 5px 5px 15px'
+        width: '170px',
+        height: '60px'
     };
 
     const buttonGroupStyle = {

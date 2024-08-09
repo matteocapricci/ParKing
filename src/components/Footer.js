@@ -7,7 +7,7 @@ function Footer() {
         textAlign: 'center',
         fontSize: '15px',
         padding: '16px 0',
-        marginTop: '5px',
+        marginTop: '15px',
         marginBottom: '5px',
     };
 
