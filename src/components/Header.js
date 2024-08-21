@@ -1,32 +1,46 @@
 import CustomButton from "./CustomButton";
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Box from '@mui/material/Box';
+import {useNavigate} from "react-router-dom";
 
 
 function Header({page}) {
 
-    const buttonHome1 = {
-        name: page === ("defaultHomepage" || "registerHomepage") ? (<b>Home</b>) : "Home",
-        size: "large",
-        //handleClick: ()=>{navigate("/")}
+    const navigate = useNavigate();
+
+    const handleClickLoginPage = () => {
+        console.log(page)
+        if (buttonHome3.name === 'Log-in') {
+            navigate("/login")
+        } else {
+            navigate("/")
+        }
     };
 
-    const buttonHome2 = {
-        name: page === "defaultHomepage" ?  "Sign-up" : "Area Personale",
+    const buttonHome1 = {
+        name: page === ("defaultHomepage") ? (<b style={{ color: "#FFAF1F"}}>Home</b>) : "Home",
         size: "large",
+        variant: "text",
+        handleClick: ()=>{navigate("/")}
+    };
+
+    const buttonHome2 = { 
+        name: page === ("defaultHomepage" || "login") ?  "Sign-up" : "Area Personale",
+        size: "large",
+        variant: "text"
         //handleClick: ()=>{navigate("/")}
     };
 
     const buttonHome3 = {
         name: page === "defaultHomepage" ?  "Log-in" : "Log-out",
         size: "large",
-        //handleClick: ()=>{navigate("/")}
+        variant: "text",
+        handleClick: handleClickLoginPage
     };
 
     const headerStyle = {
-        backgroundColor: '#add8e6',
-        width: '100%',
-        marginBottom: '5px',
+        backgroundColor: '#304269',
+        width: '100%'
     };
 
     const logoStyle = {
@@ -34,11 +48,6 @@ function Header({page}) {
         height: '100px',
         textAlign: 'left',
         padding: '5px 5px 5px 15px'
-    };
-
-    const textStyle = {
-        width: '170px',
-        height: '60px'
     };
 
     const buttonGroupStyle = {
@@ -49,7 +58,6 @@ function Header({page}) {
     return (
         <Box style={headerStyle} display="flex" alignItems="center">
             <img src="/logos/parking_logo.png" alt="logo" style={logoStyle} />
-            <img src="/logos/ParKing_Text.png" alt="ParKing" style={textStyle}/>
             <Box style={buttonGroupStyle}>
                 <ButtonGroup variant="text" color="primary">
                     <CustomButton {...buttonHome1} />

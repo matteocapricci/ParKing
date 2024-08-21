@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import CustomButton from './CustomButton';
 
 function DestinationForm() {
-    // Definizione delle costanti per gli stili
+
     const containerStyle = {
         display: 'flex',
         flexDirection: 'column',
@@ -67,6 +68,13 @@ function DestinationForm() {
     const [dateOut, setDateOut] = useState('');
     const [transport, setTransport] = useState('any');
     const [isButtonHovered, setIsButtonHovered] = useState(false);
+
+    const searchButton = {
+        name: "Cerca",
+        size: "large",
+        variant: "contained"
+        //handleClick: ()=>{navigate("/")}
+    };
 
     // Funzione chiamata quando si salva il form
     const handleSave = (event) => {
@@ -166,14 +174,12 @@ function DestinationForm() {
                 </label>
             </div>
 
-            <button 
+            <CustomButton 
                 type="submit" 
-                style={isButtonHovered ? { ...buttonStyle, ...buttonHoverStyle } : buttonStyle}
                 onMouseEnter={() => setIsButtonHovered(true)}
                 onMouseLeave={() => setIsButtonHovered(false)}
-            >
-                Cerca
-            </button>
+                {...searchButton}
+            />
         </form>
     );
 }
