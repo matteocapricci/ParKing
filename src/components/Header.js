@@ -2,6 +2,17 @@ import CustomButton from "./CustomButton";
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Box from '@mui/material/Box';
 import {useNavigate} from "react-router-dom";
+import {
+    headerStyle,
+    buttonGroupStyle,
+} from '../style/styles.js';
+
+const logoStyle = {
+    width: '100px',
+    height: '100px',
+    textAlign: 'left',
+    padding: '5px 5px 5px 15px'
+};
 
 
 function Header({page}) {
@@ -36,23 +47,6 @@ function Header({page}) {
         size: "large",
         variant: "text",
         handleClick: handleClickLoginPage
-    };
-
-    const headerStyle = {
-        backgroundColor: '#304269',
-        width: '100%'
-    };
-
-    const logoStyle = {
-        width: '100px',
-        height: '100px',
-        textAlign: 'left',
-        padding: '5px 5px 5px 15px'
-    };
-
-    const buttonGroupStyle = {
-        marginLeft: 'auto',
-        padding: '5px 15px 5px 5px'
     };
 
     return (

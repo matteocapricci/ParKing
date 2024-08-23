@@ -1,4 +1,5 @@
 import Button from '@mui/material/Button';
+import theme from '../style/palette';
 
 function CustomButton({name, size, variant, handleClick}) {
 
@@ -15,12 +16,13 @@ function CustomButton({name, size, variant, handleClick}) {
         handleClick()
     }
 
+
     return (
         <div> 
             <Button
                 size={size}
                 variant={variant}
-                sx={{ color: 'white' }}
+                sx={{ color: theme.palette.secondary.light }}
                 onClick={realHandleClick}>
                 {name}
             </Button>
