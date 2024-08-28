@@ -6,6 +6,8 @@ import {
     headerStyle,
     buttonGroupStyle,
 } from '../style/styles.js';
+import { useContext } from "react";
+import { AuthContext } from '../contexts/authContext/index.jsx';
 
 const logoStyle = {
     width: '100px',
@@ -18,8 +20,17 @@ const logoStyle = {
 function Header({page}) {
 
     const navigate = useNavigate();
+    const {userLoggedIn, doSignOut} = useContext(AuthContext);
 
     const handleClickLoginPage = () => {
+        console.log(page)
+        if (buttonHome3.name === 'Log-in') {
+            navigate("/login")
+        } else {
+            navigate("/")
+        }
+    };
+    const handleClickSigupPage = () => {
         console.log(page)
         if (buttonHome3.name === 'Log-in') {
             navigate("/login")
@@ -32,32 +43,42 @@ function Header({page}) {
         name: page === ("defaultHomepage") ? (<b style={{ color: "#FFAF1F"}}>Home</b>) : "Home",
         size: "large",
         variant: "text",
-        handleClick: ()=>{navigate("/")}
+        onClick: ()=>{navigate("/")}
     };
 
     const buttonHome2 = { 
-        name: page === ("defaultHomepage" || "login") ?  "Sign-up" : "Area Personale",
+        name:"Sign-up", 
         size: "large",
-        variant: "text"
-        //handleClick: ()=>{navigate("/")}
+        variant: "text",
+        onClick: ()=>{doSignOut(navigate)}
     };
 
     const buttonHome3 = {
-        name: page === "defaultHomepage" ?  "Log-in" : "Log-out",
+        name: "Log-in",
         size: "large",
         variant: "text",
-        handleClick: handleClickLoginPage
+        onClick: handleClickLoginPage
+    };
+    
+    const buttonHome4 = {
+        name: "AreaPersonale / immagine del profilo",
+        size: "large",
+        variant: "text",
+        onClick: handleClickLoginPage
     };
 
     return (
         <Box style={headerStyle} display="flex" alignItems="center">
             <img src="/logos/parking_logo.png" alt="logo" style={logoStyle} />
             <Box style={buttonGroupStyle}>
-                <ButtonGroup variant="text" color="primary">
+                <ButtonGroup variant="text">
                     <CustomButton {...buttonHome1} />
                     <CustomButton {...buttonHome2} />
                     <CustomButton {...buttonHome3} />
                 </ButtonGroup>
+                <div>
+                    {`User Logged In: ${userLoggedIn ? "Yes" : "No"}`}
+                </div>
             </Box>
         </Box>
     );

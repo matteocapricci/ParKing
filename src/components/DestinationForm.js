@@ -41,6 +41,13 @@ function DestinationForm() {
         marginRight: '10px',
     };
 
+    const datePickerContainer = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        gap: '20px',
+        marginBottom: '20px',
+    };
+
     const [destination, setDestination] = useState('');
     const [dateIn, setDateIn] = useState('');
     const [dateOut, setDateOut] = useState('');
@@ -74,12 +81,14 @@ function DestinationForm() {
         transition: 'background-color 0.3s',
     };
 
+    
+
     return (
         <div style={formContainer}>
-            <h2 style={heading}>Search</h2>
+            <h2 style={heading}>Look for your place</h2>
             <label htmlFor="destination" style={label}>
-                <FontAwesomeIcon icon={faLocationDot} style={{ marginRight: '10px' }} />
-                Città di destinazione:
+                <FontAwesomeIcon icon={faLocationDot} style={{ marginRight: '10px', color: theme.palette.background.text }} />
+                Destination:
             </label>
             <input 
                 type="text" 
@@ -91,36 +100,42 @@ function DestinationForm() {
                 style={input} 
             />
 
-            <label htmlFor="dateIn" style={label}>
-                <FontAwesomeIcon icon={faCalendarDay} style={{ marginRight: '10px' }} />
-                Data di inizio:
-            </label>
-            <input 
-                type="datetime-local" 
-                id="dateIn" 
-                name="dateIn" 
-                value={dateIn} 
-                onChange={(e) => setDateIn(e.target.value)} 
-                required 
-                style={input}
-            />
-            <label htmlFor="dateOut" style={label}>
-                <FontAwesomeIcon icon={faCalendarPlus} style={{ marginRight: '10px' }} />
-                Data di fine:
-            </label>
-            <input 
-                type="datetime-local" 
-                id="dateOut" 
-                name="dateOut" 
-                value={dateOut} 
-                onChange={(e) => setDateOut(e.target.value)} 
-                required 
-                style={input}
-            />
+            <div style={datePickerContainer}>
+                <div style={{ flex: '1' }}>
+                    <label htmlFor="dateIn" style={label}>
+                        <FontAwesomeIcon icon={faCalendarDay} style={{ marginRight: '10px' }} />
+                        Check-in:
+                    </label>
+                    <input 
+                        type="datetime-local" 
+                        id="dateIn" 
+                        name="dateIn" 
+                        value={dateIn} 
+                        onChange={(e) => setDateIn(e.target.value)} 
+                        required 
+                        style={input}
+                    />
+                </div>
+                <div style={{ flex: '1' }}>
+                    <label htmlFor="dateOut" style={label}>
+                        <FontAwesomeIcon icon={faCalendarPlus} style={{ marginRight: '10px' }} />
+                        Check-out:
+                    </label>
+                    <input 
+                        type="datetime-local" 
+                        id="dateOut" 
+                        name="dateOut" 
+                        value={dateOut} 
+                        onChange={(e) => setDateOut(e.target.value)} 
+                        required 
+                        style={input}
+                    />
+                </div>
+            </div>
 
             <label style={label}>
                 <FontAwesomeIcon icon={faWandSparkles} style={{ marginRight: '10px' }} />
-                Scegli il mezzo di trasporto:
+                Vehicol size:
             </label>
             <div style={radioGroupStyle}>
                 <div 
@@ -138,20 +153,24 @@ function DestinationForm() {
                     Moto
                 </div>
                 <div 
-                    style={{ ...radioItemStyle, ...(transport === 'auto' ? activeRadioItemStyle : {}) }} 
-                    onClick={() => setTransport('auto')}
+                    style={{ ...radioItemStyle, ...(transport === 'car' ? activeRadioItemStyle : {}) }} 
+                    onClick={() => setTransport('car')}
                 >
                     <FontAwesomeIcon icon={faCar} style={radioInputStyle} />
-                    Auto
+                    Car
                 </div>
                 <div 
                     style={{ ...radioItemStyle, ...(transport === 'truck' ? activeRadioItemStyle : {}) }} 
                     onClick={() => setTransport('truck')}
                 >
                     <FontAwesomeIcon icon={faTruck} style={radioInputStyle} />
-                    Camion
+                    Truck
                 </div>
             </div>
+
+            <div className="form-container">
+            
+        </div>
 
             <button 
                 type="submit" 

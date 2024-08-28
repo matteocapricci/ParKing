@@ -6,7 +6,7 @@ export const textStyle = {
 };
 
 export const heading = {
-    color: '#333',
+    color: theme.palette.primary.dark,
 };
   
 export const displayStyle = {
@@ -20,7 +20,7 @@ export const displayStyle = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '70vh',
+    height: '80vh',
     backgroundColor: '#f8f8f8',
     flexDirection: 'column',
 };
@@ -38,7 +38,6 @@ export const formContainer = {
     width: '100%',
     maxWidth: '400px',
     textAlign: 'center',
-    backgroundColor: '#fff',
 };
 
 export const form = {
@@ -63,6 +62,8 @@ fontSize: '14px',
 borderRadius: '4px',
 border: '1px solid "#ccc"',
 boxSizing: 'border-box',
+color: theme.palette.primary.dark,
+marginBottom: '10px',
 };
 
 export const button = {
@@ -110,11 +111,23 @@ export const imageStyle = {
 };
 
 export const headerStyle = {
-    backgroundColor: '#304269',
+    backgroundColor: theme.palette.primary.dark ,
     width: '100%'
 };
 
 export const buttonGroupStyle = {
     marginLeft: 'auto',
     padding: '5px 15px 5px 5px'
+};
+
+
+export const titleStyle = {
+    fontSize: '20px',
+    color: theme.palette.background.text, 
+    marginBottom: '10px',
+};
+
+export const subtitleStyle = {
+    fontSize: '18px',
+    color: theme.palette.secondary.main, 
 };

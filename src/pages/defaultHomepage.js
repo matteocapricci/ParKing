@@ -4,23 +4,24 @@ import DestinationForm from "../components/DestinationForm";
 import theme from "../style/palette";
 import {
     displayStyle,
+    titleStyle,
+    subtitleStyle,
 } from '../style/styles.js';
 import CenterLogo from "../components/CenterLogo.js";
 import PageContainer from '../components/PageContainer.js';
 
 function DefaultHomepage() {
 
+    const displayStyle = {
+        textAlign: 'center',
+        padding: '20px', 
+        backgroundColor: '#f8f8f8',
+    };
+
     return (
         <div>
             <Header page={"defaultHomepage"}/>
             <CenterLogo></CenterLogo>
-            <div style={displayStyle}>
-                <h3 align="center" style={{ color: theme.palette.background.text }}>
-                    Discover the magic of ParKing: the app that turns parking into a breeze, no matter where you are.
-                    <br />
-                    Clear your path, one TAP at a time!
-                </h3>
-            </div>
 
             <PageContainer>
                 <DestinationForm />
