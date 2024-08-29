@@ -20,7 +20,6 @@ function DestinationForm() {
     };
 
     const radioItemStyle = {
-        display: 'flex',
         alignItems: 'center',
         marginRight: '10px',
         cursor: 'pointer',
@@ -42,10 +41,11 @@ function DestinationForm() {
     };
 
     const datePickerContainer = {
-        display: 'flex',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
         justifyContent: 'space-between',
         gap: '20px',
-        marginBottom: '20px',
+        marginBottom: '20px'
     };
 
     const [destination, setDestination] = useState('');
