@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { auth } from "../../services/firebase/confFirebase.js";
 import { onAuthStateChanged } from "firebase/auth";
 import { createUserWithEmailAndPassword, GoogleAuthProvider, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, updatePassword } from "firebase/auth";
-import {store_doc} from "../../services/firebase/persistenceManager"
+import { store_doc } from "../../services/firebase/persistenceManager"
 
 export const AuthContext = React.createContext();
 
@@ -28,26 +28,23 @@ export const AuthProvider = ({children}) => {
         setLoading(false);
     }
 
-    const doCreateUserWithEmailAndPassword = async function (name, surname, username, email, password, navigate) {
+    const doCreateUserWithEmailAndPassword = async function (name, surname, email, password, navigate) {
             const registeredUser = {}
             registeredUser["name"] = name
             registeredUser["surname"] = surname
-            registeredUser["username"] = username
             registeredUser["role"] = false
             registeredUser["link_img"] = ""
     
     
             await createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    const user = userCredential.user;
-                    console.log(user);
-                    //registeredUser["uid"] = user.uid
-                    //store_doc(registeredUser,"User")
-                    setCurrentUser(userCredential.user);
+                    registeredUser["uid"] = userCredential.user.uid
+                    store_doc(registeredUser,"User")
+                    setCurrentUser(userCredential.user.uid);
                     setUserLoggedIn(true);
                     navigate("/");
                     console.log("SUCCESS"); //Debug
-                    console.log(userCredential);
+                    console.log(registeredUser);
                     return true
 
                 })
@@ -71,8 +68,6 @@ export const AuthProvider = ({children}) => {
             })
             .catch((error) => {
                 console.log("ERRORE"); //Debug
-                const errorCode = error.code;
-                const errorMessage = error.message;
                 return false
             });
     }

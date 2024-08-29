@@ -10,7 +10,9 @@ export const store_doc =  async function (obj, collection_name, error= ()=>{}, p
         }
 
         let col= collection(db, collection_name)
+        console.log(col)
         let result = await addDoc(col, obj)
+        console.log("RISULTATO")
         console.log(result)
 
         console.log("ok")
