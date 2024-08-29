@@ -113,7 +113,7 @@ function DestinationForm() {
                         value={dateIn} 
                         onChange={(e) => setDateIn(e.target.value)} 
                         required 
-                        style={input}
+                        style={{ ...input, maxWidth: "190px" }}
                     />
                 </div>
                 <div style={{ flex: '1' }}>
@@ -128,7 +128,7 @@ function DestinationForm() {
                         value={dateOut} 
                         onChange={(e) => setDateOut(e.target.value)} 
                         required 
-                        style={input}
+                        style={{ ...input, maxWidth: "190px" }}
                     />
                 </div>
             </div>
