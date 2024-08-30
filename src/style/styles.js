@@ -13,7 +13,7 @@ export const displayStyle = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',    
-    backgroundColor: '#f8f8f8'
+    backgroundColor: theme.palette.info.light
 };
   
  export const containerStyle = {
@@ -21,7 +21,7 @@ export const displayStyle = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '80vh',
-    backgroundColor: '#f8f8f8',
+    backgroundColor: theme.palette.info.light,
     flexDirection: 'column'
 };
   
@@ -54,6 +54,15 @@ export const label = {
     color: theme.palette.background.text,
     fontSize: '14px'
 };
+
+export const h1 = {
+    display: 'block',
+    marginBottom: '8px',
+    textAlign: 'center',
+    color: theme.palette.secondary.main,
+    fontSize: '40px'
+};
+
 
 export const input = {
     width: '100%',
@@ -97,7 +106,7 @@ export const link = {
 };
 
 export const footerStyle = {
-    backgroundColor: '#304269',
+    backgroundColor: theme.palette.background.dark,
     width: '100%',
     textAlign: 'center',
     fontSize: '15px',
@@ -131,3 +140,9 @@ export const subtitleStyle = {
     fontSize: '18px',
     color: theme.palette.secondary.main
 };
+
+export const resultCardListStyle = {
+    width: "19%",
+    marginRight: "5px",
+    marginLeft: "20px"
+}
