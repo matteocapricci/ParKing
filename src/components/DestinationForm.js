@@ -6,6 +6,7 @@ import {
     label,
     formContainer,
     heading,
+    error
 } from '../style/styles.js';
 import theme from '../style/palette.js';
 
@@ -51,6 +52,8 @@ const DestinationForm = () => {
   const [dateOut, setDateOut] = useState('');
   const [transport, setTransport] = useState('any');
   const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [destinationError, setDestinationError] = useState('')
+  const [dateError, setDateError] = useState('')
 
   // Funzione per gestire la ricerca dei suggerimenti
   const handleSearch = (query) => {
@@ -80,15 +83,28 @@ const DestinationForm = () => {
   // Funzione chiamata quando si salva il form
   const handleSave = (event) => {
     event.preventDefault();
+    setDestinationError('');
+    setDateError('');
+    
+    let hasError = false;
 
-    if (new Date(dateOut) < new Date(dateIn)) {
-      alert("La data di fine non può essere precedente alla data di inizio.");
-    } else {
-      console.log("Città di destinazione:", destination);
-      console.log("Data di inizio:", dateIn);
-      console.log("Data di fine:", dateOut);
-      console.log("Mezzo di trasporto:", transport);
-      // Aggiungi qui la logica per salvare i dati, come una chiamata API
+    if (!destination.trim()) {
+        setDestinationError('Destination is required.');
+        hasError = true;
+    } else if (!dateIn.trim()) {
+        setDateError("Check-in date is required");
+        hasError = true;
+    } else if (!dateOut.trim()) {
+        setDateError("Check-out date is required");
+        hasError = true;
+    } else if (new Date(dateIn) > new Date(dateOut)) {
+        setDateError("Check-in date cannot be earlier than check-out date");
+        hasError = true;
+    }
+  
+    // Prevent form submission if there are errors
+    if (hasError) {
+        return;
     }
   };
 
@@ -124,6 +140,7 @@ const DestinationForm = () => {
           required 
           style={input} 
         />
+        {destinationError && <p style={error}>{destinationError}</p>}
 
         {/* Mostra i suggerimenti */}
         {suggestions.length > 0 && (
@@ -192,6 +209,7 @@ const DestinationForm = () => {
           />
         </div>
       </div>
+      {dateError && <p style={error}>{dateError}</p>}
 
       <label style={label}>
         <FontAwesomeIcon icon={faWandSparkles} style={{ marginRight: '10px' }} />
