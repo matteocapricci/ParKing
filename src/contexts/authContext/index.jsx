@@ -2,7 +2,7 @@ import React from "react";
 import { useContext, useEffect, useState } from "react";
 import { auth } from "../../services/firebase/confFirebase.js";
 import { onAuthStateChanged } from "firebase/auth";
-import { createUserWithEmailAndPassword, GoogleAuthProvider, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, updatePassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, updatePassword, updateProfile} from "firebase/auth";
 import { store_doc } from "../../services/firebase/persistenceManager"
 
 export const AuthContext = React.createContext();
@@ -28,49 +28,45 @@ export const AuthProvider = ({children}) => {
         setLoading(false);
     }
 
-    const doCreateUserWithEmailAndPassword = async function (name, surname, email, password, navigate) {
-            const registeredUser = {}
-            registeredUser["name"] = name
-            registeredUser["surname"] = surname
-            registeredUser["role"] = false
-            registeredUser["link_img"] = ""
-    
-    
-            await createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    registeredUser["uid"] = userCredential.user.uid
-                    store_doc(registeredUser,"User")
-                    setCurrentUser(userCredential.user.uid);
-                    setUserLoggedIn(true);
-                    navigate("/");
-                    console.log("SUCCESS"); //Debug
-                    console.log(registeredUser);
-                    return true
+    const doCreateUserWithEmailAndPassword = async (name, surname, email, password, navigate) => {
+        try {
 
-                })
-                .catch((error) => {
-                    console.log("ERRORE"); //Debug
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    return false
-                });
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            
+            let displayName = name + ' ' + surname;
+
+            await updateProfile(userCredential.user, { displayName });
+
+            setCurrentUser(userCredential.user);
+            setUserLoggedIn(true);
+            navigate("/");
+            console.log("SUCCESS"); //Debug
+            console.log(userCredential.user);
+            return true
+
+        } catch (error) {
+            console.log("ERROR"); // Debug
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            return false;
+        }
     }
 
     const doSignInWithEmailAndPassword = async function (email, password, navigate) {
-        await signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                setCurrentUser(userCredential.user);
-                setUserLoggedIn(true);
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            setCurrentUser(userCredential.user);
+            setUserLoggedIn(true);
+            if(navigate){
                 navigate("/");
-                console.log("SUCCESS"); //Debug
-                console.log(userCredential);
-                return true
-            })
-            .catch((error) => {
-                console.log("ERRORE"); //Debug
-                return false
-            });
-    }
+            }
+            console.log(userCredential);
+            return true; 
+        } catch (error) {
+            console.error("Error signing in:", error);
+            return false;
+        }
+    };
 
     const doSignOut = (navigate) => {
         setCurrentUser(null);
@@ -86,20 +82,25 @@ export const AuthProvider = ({children}) => {
                 setCurrentUser(userCredential.user);
                 setUserLoggedIn(true);
                 navigate("/");
-                console.log("SUCCESS"); //Debug
                 return true
             })
             .catch((error) => {
-                console.log("ERRORE"); //Debug
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 return false
             });
     }
 
-    const doPasswordChange = (password) => {
-        return updatePassword(auth.currentUser, password);
-    }
+    const doPasswordChange = async (password) => {
+        try {
+            await updatePassword(auth.currentUser, password);
+            return true; 
+        } catch (error) {
+            console.error("Password change failed:", error); 
+            return false; 
+        }
+    };
+
 
     const value = {
         currentUser,
@@ -108,7 +109,8 @@ export const AuthProvider = ({children}) => {
         doCreateUserWithEmailAndPassword,        
         doSignInWithEmailAndPassword,
         doSignInWithGoogle,
-        doSignOut        
+        doSignOut,
+        doPasswordChange        
     }
 
     return (

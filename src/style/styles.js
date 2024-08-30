@@ -91,13 +91,31 @@ export const buttonHover = {
 };
 
 export const error = {
-    color: theme.palette.error.main, 
+    color: theme.palette.error.main,
     fontSize: '14px',
     marginTop: '10px',
     marginBottom: '10px',
     backgroundColor: theme.palette.error.light,
     borderRadius: '4px',
-    maxWidth: '100%'
+    maxWidth: '100%',
+    textAlign: 'center', 
+    display: 'flex',  
+    justifyContent: 'center', 
+    alignItems: 'center'  
+};
+
+export const succes = {
+    color: theme.palette.success.main,
+    fontSize: '14px',                
+    marginTop: '10px',                
+    marginBottom: '10px',             
+    backgroundColor: theme.palette.success.light, 
+    borderRadius: '4px',             
+    maxWidth: '100%',                
+    textAlign: 'center',              
+    display: 'flex',                 
+    justifyContent: 'center',         
+    alignItems: 'center'            
 };
 
 export const link = {

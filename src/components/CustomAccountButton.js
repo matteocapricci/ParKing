@@ -85,7 +85,11 @@ function CustomAccountButton({ src }) {
         <>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
                 <IconButton {...propsIconButton}>
-                    <Avatar src={src} sx={{ width: 40, height: 40, border: `2px solid ${theme.palette.primary.main}` }} />
+                    <Avatar
+                        alt={currentUser?.displayName || "User"}
+                        src={currentUser?.photoURL || '/default-profile.png'}
+                        sx={{ width: 40, height: 40, margin: 'auto', border: `2px solid ${theme.palette.secondary.dark}` }}
+                    />
                 </IconButton>
             </Box>
             <Menu
@@ -97,7 +101,11 @@ function CustomAccountButton({ src }) {
                 {...propsMenu}
             >
                 <MenuItem onClick={handleClickProfile}>
-                    <Avatar src={src} />
+                    <Avatar
+                        alt={currentUser?.displayName || "User"}
+                        src={currentUser?.photoURL || '/default-profile.png'}
+                        sx={{ width: 35, height: 35, margin: 'auto', border: `2px solid ${theme.palette.primary.main}` }}
+                    />
                     <span style={{ color: theme.palette.primary.dark, fontWeight: 500 }}>Profile</span>
                 </MenuItem>
                 <Divider />

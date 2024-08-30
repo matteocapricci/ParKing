@@ -1,42 +1,26 @@
-import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import 'bulma/css/bulma.min.css';
-import {CardActionArea} from '@mui/material';
-import theme from "../style/palette";
+import React from 'react';
+import { Card, CardContent, CardMedia } from '@mui/material';
 
-function CustomCard({ horizontal, maxWidth, contentStyle, cardDescriptionStyle, numberContentRow, children, img , onClick }) {
-    let style
-    if(horizontal){ // TODO: punto modificato palette
-        style = {width: maxWidth, display: 'flex', boxShadow: `0px 0px 1px ${theme.palette.primary.main}`}
-    }
-    else{ // TODO: punto modificato palette
-        style = {width: maxWidth, display: 'flex', flexDirection: 'column', boxShadow: `0px 0px 1px ${theme.palette.primary.main}`}
-    }
-
+const CustomCard = ({ horizontal, maxWidth, contentWidth, img, children }) => {
     return (
-        <Card sx={style}>
-            {!!onClick ? (<CardActionArea onClick={onClick}>
-                <CardMedia
-                    style={{padding: "5px", position: "relative", margin: "auto", width: "auto", height: "350px"}}
-                    component="img"
-                    image={img}
-                    alt="img"
-                />
-                </CardActionArea>) :
-                <CardMedia
-                    style={{padding: "5px", position: "relative", margin: "auto", width: "auto", height: "350px"}}
-                    component="img"
-                    image={img}
-                    alt="img"
-                />}
-            <CardContent sx={cardDescriptionStyle}>
-                <Typography sx={{display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: numberContentRow,
-                    overflow: 'hidden', textOverflow: 'ellipsis', ...contentStyle}} component={"div"}>
-                    {children}
-                </Typography>
+        <Card sx={{ 
+                display: 'flex', 
+                flexDirection: horizontal ? 'row' : 'column', 
+                maxWidth: maxWidth, 
+                marginLeft: '20px', 
+                justifyContent: 'center', 
+                alignItems: 'center',
+                textAlign: 'center'  // Optional: centers the text inside the CardContent
+            }}>
+            <CardContent sx={{ 
+                width: contentWidth, 
+                display: 'flex', 
+                flexDirection: 'column', 
+                justifyContent: 'center', 
+                alignItems: 'center',
+                textAlign: 'center' 
+            }}>
+                {children}
             </CardContent>
         </Card>
     );
