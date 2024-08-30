@@ -5,8 +5,7 @@ import DefaultHomepage from './pages/DefaultHomepage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
-import Signup from './pages/Signup'
-import ShowParkingMapResult from './pages/ShowParkingMapResult'
+import ShowParkingMapResult from './pages/ShowParkingMapResult';
 import theme from "./style/palette";
 import {ThemeProvider} from "@emotion/react";
 
