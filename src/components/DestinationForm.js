@@ -23,7 +23,6 @@ const DestinationForm = () => {
       cursor: 'pointer',
       padding: '10px',
       borderRadius: '4px',
-      border: `1px solid ${theme.palette.primary.light}`,
       transition: 'background-color 0.3s, border-color 0.3s',
       color: theme.palette.secondary.dark
   };
