@@ -130,9 +130,6 @@ const Login = () => {
           <p style={link}>
             Don't have an account? <a href="/signup">Sign up</a>
           </p>
-          <p style={link}>
-            <a href="/forgot-password">Forgot your password?</a>
-          </p>
           <div style={{ display: 'flex', flexDirection: 'row', textAlign: 'center', width: '100%', marginBottom: '15px' }}>
             <div style={{ borderBottom: '2px solid black', marginBottom: '10px', marginRight: '8px', width: '100%' }}></div>
             <div style={{ fontSize: '0.875rem', fontWeight: 'bold', width: 'fit-content', }}>OR</div>

@@ -1,13 +1,12 @@
 import CustomButton from "./CustomButton";
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Box from '@mui/material/Box';
-import {useNavigate} from "react-router-dom";
-import {
-    headerStyle,
-    buttonGroupStyle,
-} from '../style/styles.js';
+import {useNavigate, useLocation} from "react-router-dom";
+import { headerStyle, buttonGroupStyle} from '../style/styles.js';
 import { useContext } from "react";
 import { AuthContext } from '../contexts/authContext/index.jsx';
+import CustomAccountButton from "./CustomAccountButton.js";
+import theme from "../style/palette.js";
 
 const logoStyle = {
     width: '100px',
@@ -21,64 +20,46 @@ function Header({page}) {
 
     const navigate = useNavigate();
     const {userLoggedIn, doSignOut} = useContext(AuthContext);
+    const location = useLocation();
 
-    const handleClickLoginPage = () => {
-        console.log(page)
-        if (buttonHome3.name === 'Log-in') {
-            navigate("/login")
-        } else {
-            navigate("/")
-        }
-    };
-    const handleClickSigupPage = () => {
-        console.log(page)
-        if (buttonHome3.name === 'Log-in') {
-            navigate("/login")
-        } else {
-            navigate("/")
-        }
-    };
-
-    const buttonHome1 = {
-        name: page === ("defaultHomepage") ? (<b style={{ color: "#FFAF1F"}}>Home</b>) : "Home",
+    const handleClickHome = {
+        name: location.pathname === "/" ? (<b style={{ color: theme.palette.secondary.dark}}>Home</b>) : "Home",
         size: "large",
         variant: "text",
         onClick: ()=>{navigate("/")}
     };
 
-    const buttonHome2 = { 
-        name:"Sign-up", 
+    const handleClickSignup= { 
+        name: location.pathname === "/signup" ? (<b style={{ color: theme.palette.secondary.dark}}>Sign-Up</b>) : "Sign-Up",
         size: "large",
         variant: "text",
-        onClick: ()=>{doSignOut(navigate)}
+        onClick: ()=>{navigate("/signup")}
     };
 
-    const buttonHome3 = {
-        name: "Log-in",
+    const handleClickLogin = {
+        name: location.pathname === "/login" ? (<b style={{ color: theme.palette.secondary.dark}}>Log-In</b>) : "Log-In",
         size: "large",
         variant: "text",
-        onClick: handleClickLoginPage
+        onClick: ()=>{navigate("/login")}
     };
     
-    const buttonHome4 = {
-        name: "AreaPersonale / immagine del profilo",
-        size: "large",
-        variant: "text",
-        onClick: handleClickLoginPage
-    };
 
     return (
         <Box style={headerStyle} display="flex" alignItems="center">
             <img src="/logos/parking_logo.png" alt="logo" style={logoStyle} />
             <Box style={buttonGroupStyle}>
+            {userLoggedIn ? (
                 <ButtonGroup variant="text">
-                    <CustomButton {...buttonHome1} />
-                    <CustomButton {...buttonHome2} />
-                    <CustomButton {...buttonHome3} />
+                    <CustomButton {...handleClickHome} />
+                    <CustomAccountButton />
                 </ButtonGroup>
-                <div>
-                    {`User Logged In: ${userLoggedIn ? "Yes" : "No"}`}
-                </div>
+                    ):(
+                <ButtonGroup variant="text">
+                    <CustomButton {...handleClickHome} />
+                    <CustomButton {...handleClickSignup} />
+                    <CustomButton {...handleClickLogin} />
+                </ButtonGroup>
+            )}
             </Box>
         </Box>
     );
