@@ -2,6 +2,7 @@ import CustomButton from "./CustomButton";
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Box from '@mui/material/Box';
 import {useNavigate, useLocation} from "react-router-dom";
+import { useEffect } from "react";
 import { headerStyle, buttonGroupStyle} from '../style/styles.js';
 import { useContext } from "react";
 import { AuthContext } from '../contexts/authContext/index.jsx';
@@ -19,7 +20,7 @@ const logoStyle = {
 function Header({page}) {
 
     const navigate = useNavigate();
-    const {userLoggedIn, doSignOut} = useContext(AuthContext);
+    const {currentUser, userLoggedIn, doSignOut} = useContext(AuthContext);
     const location = useLocation();
 
     const handleClickHome = {
@@ -43,6 +44,9 @@ function Header({page}) {
         onClick: ()=>{navigate("/login")}
     };
     
+    useEffect(() => {
+
+    }, [currentUser]);
 
     return (
         <Box style={headerStyle} display="flex" alignItems="center">

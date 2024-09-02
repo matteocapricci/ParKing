@@ -187,4 +187,46 @@ export const load_ordered_docs = async function (collection_name, order_by_field
         console.log(e)
         error()
     }
+    
+}
+
+export const get_docs_by_attribute = async function(attribute, collection_name, attribute_name, limit_number=null, order_by =null, order_direction = "asc", error = ()=>{}, postprocessing = ()=>{}, do_not_exist = ()=>{}){
+    try{
+        // preprocessing
+        if( typeof(attribute) == "function"){
+            attribute = attribute()
+        }
+
+        // execute operation
+        let q
+        if( limit_number == null && order_by == null){
+            q = query(collection(db, collection_name), where(attribute_name, "==", attribute));
+        }
+        else if (limit_number == null){
+            q = query(collection(db, collection_name), where(attribute_name, "==", attribute), orderBy(order_by, order_direction));
+        }
+        else if(order_by == null) {
+            q = query(collection(db, collection_name), where(attribute_name, "==", attribute), limit(limit_number));
+        }
+        else{
+            q = query(collection(db, collection_name), where(attribute_name, "==", attribute), orderBy(order_by, order_direction), limit(limit_number));
+        }
+        let snapshot = await getDocs(q)
+
+        // postprocessing
+        let result = []
+        snapshot.forEach((snap_item) => {
+            result.push({
+                ...snap_item.data(),
+                doc_id: snap_item.id
+            })
+        })
+        postprocessing(result)
+        return result
+    }
+    catch (e) {
+        console.log(e)
+        error()
+    }
+
 }

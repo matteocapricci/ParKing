@@ -1,4 +1,4 @@
-//import * as storage from "./firebase/storage/manage_storage.js"
+import * as storage from "./imageStorage/imageStorage.js"
 import * as database from "./crudOp.js"
 
 // firebase function
@@ -106,5 +106,56 @@ export const load_ordered_docs = async function (collection_name, order_by_field
     return database.load_ordered_docs(collection_name,order_by_field,order_direction,max_item_number,error,postprocessing)
 }
 
+/**
+ * query a document
+ * @param attribute attribute value
+ * @param collection_name name of the object collection (table)
+ * @param attribute_name atribute name
+ * @param limit_number max number of results
+ * @param order_by attribute to order
+ * @param order_direction order direction (Desc, asc)
+ * @param error error function
+ * @param postprocessing postprocessing function
+ * @param do_not_exist do_not_exist function
+ * @returns {Promise<*|undefined>}
+ */
+export const get_docs_by_attribute = async function(attribute, collection_name, attribute_name, limit_number=null, order_by =null, order_direction = "asc", error = ()=>{}, postprocessing = ()=>{}, do_not_exist = ()=>{}){
+    return database.get_docs_by_attribute(attribute, collection_name, attribute_name, limit_number, order_by, order_direction , error , postprocessing , do_not_exist )
+}
 
-//Prosegui facendo le query di storage
+
+//Image Storage
+
+/**
+ * upload an img
+ * @param path_img path of the img
+ * @param file name to databese
+ * @param postprocessing postprocessing function
+ * @param error error function
+ * @returns {Promise<void>}
+ */
+export let push_img = async function (path_img, file,  postprocessing= ()=>{}, error = ()=>{}) {
+    return storage.push_img(path_img, file,  postprocessing, error)
+}
+
+/**
+ * get image
+ * @param path_img path of the img
+ * @param postprocessing postprocessing function
+ * @param error error function
+ * @returns {Promise<string|undefined>}
+ */
+export let pull_img_url = async function (path_img, postprocessing= ()=>{}, error = ()=>{}){
+    return storage.pull_img_url(path_img, postprocessing, error)
+}
+
+/**
+ * delete img
+ * @param path_img name img to delete
+ * @param postprocessing postprocessing function
+ * @param error error function
+ * @returns {Promise<void>}
+ */
+export let delete_img = async function (path_img, postprocessing= ()=>{}, error = ()=>{}){
+    return storage.delete_img(path_img, postprocessing, error)
+}

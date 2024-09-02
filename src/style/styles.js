@@ -159,8 +159,25 @@ export const subtitleStyle = {
     color: theme.palette.secondary.main
 };
 
+
 export const resultCardListStyle = {
-    width: "19%",
-    marginRight: "5px",
-    marginLeft: "20px"
-}
+    overflowY: 'auto',
+    maxHeight: '400px',
+    paddingRight: '10px',
+    '&::-webkit-scrollbar': {
+        width: '12px',
+    },
+    '&::-webkit-scrollbar-track': {
+        background: '#f1f1f1',
+    },
+    '&::-webkit-scrollbar-thumb': {
+        background: '#888',
+        borderRadius: '6px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+        background: '#555',
+    },
+    scrollbarWidth: 'thin',
+    scrollbarColor: `${theme.palette.secondary.main} ${theme.palette.background.paper}`,
+};
+
