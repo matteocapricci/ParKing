@@ -7,7 +7,7 @@ import theme from '../style/palette';
 
 const StyledCard = styled(Card)(({ theme }) => ({
     borderRadius: '12px',
-    backgroundColor: theme.palette.secondary.light, 
+    backgroundColor: '#f8f7b1', 
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     marginBottom: '15px',
     maxWidth: '400px',
@@ -41,15 +41,19 @@ const ratingStyle = {
     color: theme.palette.primary.light
 };
 
-const CommentCard = ({ comment }) => {
+const CommentCard = ({ comment, username, photoUrl }) => {
     return (
         <StyledCard>
             <CardContent>
                 <AvatarWrapper>
-                    <AvatarStyled src={comment.photoURL} />
+                    <Avatar
+                        alt={username || "User"}
+                        src={photoUrl || '/default-profile.png'} //aggiusta con img del utente
+                        sx={{ width: 40, height: 40, marginRight:'10px', border: `2px solid ${theme.palette.secondary.dark}` }}
+                    />
                     <Box>
                         <Typography variant="body1" sx={{ fontWeight: 'bold', marginBottom: '4px' }}>
-                            {comment.username}
+                            {username}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
                             {comment.date}

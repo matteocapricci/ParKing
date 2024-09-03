@@ -14,12 +14,12 @@ const DeleteReservationDialog = ({ open, onClose, reservation, onDelete }) => {
           Are you sure you want to delete the following reservation?
         </Typography>
         <Box sx={{ padding: '10px', borderRadius: '5px', backgroundColor: theme.palette.background.default }}>
-          <Typography variant="body2"><b>Parking:</b> {reservation.parking}</Typography>
-          <Typography variant="body2"><b>Code:</b> {reservation.code}</Typography>
+          <Typography variant="body2"><b>Parking:</b> {reservation.parkingName}</Typography>
+          <Typography variant="body2"><b>Code:</b> {reservation.doc_id}</Typography>
           <Typography variant="body2"><b>Check-In:</b> {reservation.CheckIn}</Typography>
           <Typography variant="body2"><b>Check-Out:</b> {reservation.CheckOut}</Typography>
           <Typography variant="body2"><b>Total Cost:</b> {reservation.totalCost}</Typography>
-          <Typography variant="body2"><b>Services:</b> {reservation.Services.join(', ')}</Typography>
+          <Typography variant="body2"><b>Services:</b> {reservation.Services.map(service => service.name).join(', ')}</Typography>
           <Divider sx={{ marginY: '10px' }} />
           <Typography variant="body2"><b>Total Cost:</b> {reservation.totalCost}</Typography>
         </Box>

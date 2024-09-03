@@ -20,7 +20,7 @@ export const displayStyle = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '80vh',
+    height: '95vh',
     backgroundColor: theme.palette.info.light,
     flexDirection: 'column'
 };
@@ -162,7 +162,7 @@ export const subtitleStyle = {
 
 export const resultCardListStyle = {
     overflowY: 'auto',
-    maxHeight: '400px',
+    maxHeight: '600px',
     paddingRight: '10px',
     '&::-webkit-scrollbar': {
         width: '12px',

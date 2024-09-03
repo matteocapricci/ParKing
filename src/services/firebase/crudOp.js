@@ -230,3 +230,38 @@ export const get_docs_by_attribute = async function(attribute, collection_name, 
     }
 
 }
+
+export const load_docs_by_attributes = async function (collection_name, attributes_name_value, order_by = null, order_direction = "asc", limit_number = null, error = () => {}, postprocessing = () => {}) {
+    try {
+        let col = collection(db, collection_name); 
+        let q = query(col); 
+
+        for (let attribute_name in attributes_name_value) {
+            q = query(q, where(attribute_name, "==", attributes_name_value[attribute_name]));
+        }
+
+        if (order_by != null) {
+            q = query(q, orderBy(order_by, order_direction));
+        }
+
+        if (limit_number != null) {
+            q = query(q, limit(limit_number));
+        }
+
+        let snapshot = await getDocs(q);
+
+        let result = [];
+        snapshot.forEach((snap_item) => {
+            result.push({
+                ...snap_item.data(),
+                doc_id: snap_item.id
+            });
+        });
+
+        postprocessing(result);
+        return result;
+    } catch (e) {
+        console.log(e);
+        error();
+    }
+}

@@ -10,7 +10,7 @@ const theme = createTheme({
             opacity: 'rgba(79,195,247,0.16)'
         },
         secondary: {
-            light: '#f8f7b1',
+            light: '#FFBF4B',
             main: '#FFAF1F',
             dark: '#E59D1B',
             contrastText: '#fff'

@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import CenterLogo from '../components/CenterLogo.js';
@@ -12,9 +11,8 @@ import ChangeImageDialog from '../components/ChangeImageDialog';
 import ReservationList from '../components/ReservationList';
 import { Grid } from '@mui/material';
 import { AuthContext } from '../contexts/authContext/index.jsx';
-import { push_img, pull_img_url, store_doc, get_docs_by_attribute, delete_doc_by_attribute, update_doc } from '../services/firebase/persistenceManager.js';
+import { push_img, pull_img_url, store_doc, get_docs_by_attribute, delete_doc_by_attribute, update_doc, load_docs_by_attributes, delete_doc } from '../services/firebase/persistenceManager.js';
 import { auth } from '../services/firebase/confFirebase.js';
-import { error } from '../style/styles.js';
 
 const Profile = () => {
     const { doSignInWithEmailAndPassword, doPasswordChange, doUpdateProfile } = useContext(AuthContext);
@@ -31,15 +29,44 @@ const Profile = () => {
     const [img, setImg] = useState({});
     const [reservations, setReservations] = useState([]);
 
-    /*
+   /* 
     const reservations = [
-        { parking: 'Central Parking', parkingSpot: 'Car1', code: 'Res-001', CheckIn: '2023-10-01', CheckOut: '2023-10-02', plate: 'ABC123', size: 'Compact', totalCost: '$20.00', Services: ['Car Wash', 'Valet Parking'], uid: currentUser.uid },
-        { parking: 'Downtown Garage', parkingSpot: 'Car2', code: 'Res-002', CheckIn: '2023-11-15', CheckOut: '2025-11-16', plate: 'XYZ789', size: 'SUV', totalCost: '$35.00', Services: ['Tire Inflation', 'Battery Check'], uid: currentUser.uid  },
-        { parking: 'Airport Lot A', parkingSpot: 'Car1', code: 'Res-003', CheckIn: '2023-12-05', CheckOut: '2023-12-07', plate: 'JKL456', size: 'Sedan', totalCost: '$50.00', Services: ['Interior Cleaning', 'Premium Spot'], uid: currentUser.uid  },
-        { parking: 'City Center Parking', parkingSpot: 'Car2', code: 'Res-004', CheckIn: '2023-09-20', CheckOut: '2025-09-21', plate: 'MNO321', size: 'Motorbike', totalCost: '$10.00', Services: ['Helmet Storage', 'Bike Wash'], uid: currentUser.uid  },
+        { parkingId: 'bUvHDar4FkvSKzWc8Ljr',parkingName: 'Central Parking', parkingSpot: {name:'Car1', size: 'Car'}, CheckIn: '2023-10-01 15:00', CheckOut: '2023-10-02 15:30', plate: 'ABC123', totalCost: 20.00, Services:[{name:'Car Wash', price: 20.00}, {name:'Valet Parking', price: 50.00}], uid: currentUser.uid },
+        { parkingId: 'bUvHDar4FkvSKzWc8Ljr', parkingName: 'Downtown Garage', parkingSpot: {name:'Car1', size: 'Car'}, CheckIn: '2023-11-15 16:00', CheckOut: '2025-11-16 16:30', plate: 'XYZ789', totalCost: 35.00, Services:[{name:'Tire Inflation',price: 10.00}, {name:'Battery Check', price: 60.00}], uid: currentUser.uid  },
+        { parkingId: 'bUvHDar4FkvSKzWc8Ljr', parkingName: 'Airport Lot A', parkingSpot: {name:'Car1', size: 'Car'}, CheckIn: '2023-12-05 17:00', CheckOut: '2023-12-07 18:00', plate: 'JKL456', totalCost: 50.00, Services:[{name:'Interior Cleaning',price: 30.00}, {name:'Premium Spot', price: 70.00}], uid: currentUser.uid  },
+        { parkingId: 'bUvHDar4FkvSKzWc8Ljr', parkingName: 'City Center Parking', parkingSpot: {name:'Car2', size: 'Car'}, CheckIn: '2023-09-20 09:00', CheckOut: '2025-09-21 09:10', plate: 'MNO321', totalCost: 10.00, Services: [{name:'Helmet Storage',price: 40.00}, {name:'Bike Wash', price: 80.00}], uid: currentUser.uid  },
     ];
-    */
+    
 
+    const parks = {
+        "doc_id": "parking_001",
+        "nome": "City Center Parking",
+        "descrizione": "Secure and affordable parking in the heart of the city, within walking distance to major attractions and shopping centers.",
+        "location": {
+          "address": "123 Main St, Downtown",
+          "city": "Metropolis",
+          "state": "NY",
+          "postal_code": "10001",
+          "latitude": 40.712776,
+          "longitude": -74.005974
+        },
+        "timePrice": 2.00,
+        "parkingSlots": [
+            {name:'Car1', size: 'Car'},
+            {name:'Car2', size: 'Car'}
+        ],
+        "services":[
+            {name:'Car Wash', price: 20.00}, 
+            {name:'Valet Parking', price: 50.00},
+            {name:'Helmet Storage',price: 40.00}, 
+            {name:'Bike Wash', price: 80.00}
+        ],
+        "photo_urls": [
+          "https://firebasestorage.googleapis.com/v0/b/parking-11ff0.appspot.com/o/UserImages%2Fmarco.cattaneo%40gmail.com_ProPic?alt=media&token=05f2b507-56f0-4806-80b4-6065aae9d6e3",
+          "https://firebasestorage.googleapis.com/v0/b/parking-11ff0.appspot.com/o/UserImages%2Ftest%40gmail.com_ProPic?alt=media&token=2ef2b796-bfe0-4ba7-953a-b897d6103e6d"
+        ]
+      }      
+    */
 
     const handleOldChange = (event) => setOldPassword(event.target.value);
     const handleNewChange = (event) => setNewPassword(event.target.value);
@@ -60,11 +87,50 @@ const Profile = () => {
 
     }
 
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    };
+
+    const retrieveComments = async (reservations) => {
+        try {
+            let updatedReservations = [];
+            
+            // Create an array of promises for parallel execution
+            const promises = reservations.map(async (element) => {
+                try {
+                    const retrievedComment = await load_docs_by_attributes("Comment", {
+                        uid: currentUser.uid,
+                        parkingId: element.parkingId,
+                        'parkingSpot.name': element.parkingSpot.name
+                    });
+                    
+                    return { ...element, comment: retrievedComment };
+                } catch (error) {
+                    console.error("Failed to retrieve comment for element:", element.doc_id, error);
+                    return { ...element, comment: [] };
+                }
+            });
+    
+            updatedReservations = await Promise.all(promises);
+            
+            return updatedReservations;
+        } catch (error) {
+            console.error("Failed to retrieve comments:", error);
+        }
+    };
+
     const retrieveReservations = async () => {
         try{
             let newReservations = await get_docs_by_attribute(currentUser.uid, "Reservations", "uid");
-            setReservations(newReservations); 
-            console.log(newReservations);
+            newReservations = await retrieveComments(newReservations);
+            await retrieveComments(newReservations);
+            setReservations(newReservations);
         }catch (error) {
             console.error("Failed to retrieve reservations:", error);
         }
@@ -74,7 +140,6 @@ const Profile = () => {
     
     useEffect(() => {
         retrieveReservations();
-        console.log("changes");
     }, [currentUser]); //inserisci anche reservations quando lo hosti su firebase
 
     const handleChangePassword = async () => {
@@ -128,7 +193,6 @@ const Profile = () => {
         setGoogleError('');
 
         if (currentUser.emailVerified) {
-            console.log(currentUser)
             setGoogleError('You cannot change the Google image here.');
             return;
         }
@@ -156,7 +220,6 @@ const Profile = () => {
                         email: currentUser.email,
                         photoURL: url
                     };
-                    console.log(userImage)
                     await update_doc(userImage, "UserImage", oldUserImage[0].doc_id,
                         () => console.log('error'), 
                         () => console.log('done'), 
@@ -194,6 +257,37 @@ const Profile = () => {
         }
     }
 
+    const handleDeleteComment = async (reservation) => {
+        try{
+            await delete_doc("Comment", reservation.comment[0].doc_id);
+            retrieveReservations();
+
+        }catch (error) {
+            console.error("Failed to delete comment:", error);
+        }
+    };
+
+    const handleAddComment = async (reservation, text, rating) => {
+        let now = new Date();
+        now = formatDate(now);
+
+        let comment = {
+            'uid': currentUser.uid,
+            'text': text,
+            'date': now,
+            'rating': rating,
+            'parkingId': reservation.parkingId,
+            'parkingSpot': reservation.parkingSpot
+        }
+
+        try {
+            await store_doc(comment, "Comment");
+            retrieveReservations();
+        } catch (error) {
+            console.error("Failed to push comment:", error);
+        }
+    };
+
 
     return (
         <>
@@ -216,7 +310,7 @@ const Profile = () => {
                         />
                     </Grid>
                     <Grid item xs={12} md={8} sx={{ display: 'flex', justifyContent: 'center' }}>
-                      <ReservationList reservations={reservations} deleteFunction={handleDeleteReservation} />
+                      <ReservationList reservations={reservations} deleteFunction={handleDeleteReservation} currentUser={currentUser} deleteCommentFunction={handleDeleteComment} addCommentFunction={handleAddComment} />
                     </Grid>
                 </Grid>
             </PageContainer>

@@ -159,3 +159,28 @@ export let pull_img_url = async function (path_img, postprocessing= ()=>{}, erro
 export let delete_img = async function (path_img, postprocessing= ()=>{}, error = ()=>{}){
     return storage.delete_img(path_img, postprocessing, error)
 }
+
+/**
+ * Retrieves documents from a specified collection based on given attributes and optional sorting and limiting criteria.
+ * 
+ * This function queries a database collection for documents that match the provided attributes. You can also specify 
+ * sorting criteria and limit the number of results returned. Optionally, you can provide callback functions to handle 
+ * errors and to process the results after retrieval.
+ * 
+ * @param {string} collection_name - The name of the collection from which to retrieve documents.
+ * @param {Object} attributes_name_value - An object where keys are attribute names and values are the values to filter by. 
+ *                                        This object defines the criteria for which documents should be retrieved.
+ * @param {string} [order_by=null] - (Optional) The field by which to sort the results. If not provided, results are not sorted.
+ * @param {string} [order_direction="asc"] - (Optional) The direction of sorting. Can be either 'asc' for ascending or 'desc' for descending. Default is 'asc'.
+ * @param {number} [limit_number=null] - (Optional) The maximum number of documents to retrieve. If not provided, there is no limit.
+ * @param {function} [error=() => {}] - (Optional) A callback function to handle errors that occur during the query. The function receives the error object.
+ * @param {function} [postprocessing=() => {}] - (Optional) A callback function to process the retrieved documents after the query. The function receives the result of the query.
+ * 
+ * @returns {Promise<Array>} A promise that resolves to an array of documents matching the query criteria. The array is empty if no documents match.
+ */
+
+export const load_docs_by_attributes = async function(collection_name, attributes_name_value, order_by = null, order_direction = "asc", limit_number = null, error = () => {
+}, postprocessing = () => {
+}){
+    return database.load_docs_by_attributes(collection_name, attributes_name_value, order_by, order_direction, limit_number, error, postprocessing)
+}

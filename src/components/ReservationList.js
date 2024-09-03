@@ -1,30 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs, Tab, Box, Typography, Card, CardContent, CardActions, Button, Paper, Chip, Divider } from '@mui/material';
-import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import theme from '../style/palette';
 import DeleteButton from '../components/CustomButton.js';
 import DeleteReservationDialog from './DeleteReservationDialog';
-import { resultCardListStyle } from '../style/styles'; // Import the styles
-import CommentCard from '../components/CommentCard'; // Adjust the path as needed
+import { resultCardListStyle } from '../style/styles';
+import CommentCard from '../components/CommentCard'; 
+import CommentDialog from '../components/CommentDialog'; 
 
-
-const ReservationList = ({ reservations, deleteFunction }) => {
+const ReservationList = ({ reservations, deleteFunction, deleteCommentFunction, addCommentFunction, currentUser }) => {
     const [tabIndex, setTabIndex] = useState(0);
     const [filteredReservations, setFilteredReservations] = useState([]);
+    const [selectedReservation, setselectedReservation] = useState(null);
     const [openDelete, setOpenDelete] = useState(false);
-
+    const [openCommentDialog, setOpenCommentDialog] = useState(false);
     const handleOpenDelete = () => setOpenDelete(true);
-    const handleCloseDelete = () => setOpenDelete(false)
+    const handleCloseDelete = () => setOpenDelete(false);
+    const handleOpenCommentDialog = (reservation) =>( setselectedReservation(reservation), setOpenCommentDialog(true));
+    const handleCloseCommentDialog = () =>( setselectedReservation(null), setOpenCommentDialog(false));
 
     const dummyComments = [
         {
             username: 'John Doe',
             photoURL: 'https://via.placeholder.com/40',
             date: '2024-09-01',
-            text: 'Great stay! Very comfortable and clean.',
+            text: 'reat stay! Very comfortable and clean.G',
             rating: 4
         },
     ];
+
+    //reservations[0] = {...reservations[0], comment: dummyComments};
 
 
     useEffect(() => {
@@ -49,6 +53,14 @@ const ReservationList = ({ reservations, deleteFunction }) => {
     const handleDeleteReservation = (selectedReservation) => { 
         deleteFunction(selectedReservation); 
         handleCloseDelete()
+    };
+
+    const handleDeleteComment = async (comment) => {
+        deleteCommentFunction(comment);
+    };
+
+    const handleAddComment = async (reservation, text, rating) => {
+        addCommentFunction(reservation, text, rating);
     };
 
     const propsEliminate = {
@@ -101,7 +113,7 @@ const ReservationList = ({ reservations, deleteFunction }) => {
                         >
                             <CardContent>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
-                                    {reservation.code} | {reservation.parking}
+                                    {reservation.parkingSpot.name} | {reservation.parkingName}
                                 </Typography>
                                 <Divider sx={{ marginBottom: '10px' }} />
                                 <Box display="flex" flexDirection="column" sx={{ gap: '10px' }}>
@@ -115,32 +127,53 @@ const ReservationList = ({ reservations, deleteFunction }) => {
                                         </Typography>
                                     </Box>
                                     <Typography variant="body1">
-                                        <b>Total Cost:</b> {reservation.totalCost}
+                                        <b>Total Cost:</b> €{reservation.totalCost}
                                     </Typography>
                                     <Box display="flex" flexWrap="wrap" gap="5px">
                                         {reservation.Services.map((service, index) => (
-                                            <Chip key={index} label={service} color="secondary" variant="outlined" />
+                                            <Chip key={index} label={service.name} color="secondary" variant="outlined" />
                                         ))}
                                     </Box>
-                                    {new Date(reservation.CheckOut) >= new Date() ? (
-                                        <></>
-                                    ) : (
-                                        dummyComments.map((comment, idx) => (<CommentCard key={idx} comment={comment} />))
-                                    )}
+                                    {new Date(reservation.CheckOut) < new Date() ? (
+                                        reservation.comment && reservation.comment.length > 0 ? (
+                                            reservation.comment.map((comment, idx) => (
+                                                <Box key={idx}>
+                                                    <CommentCard comment={comment} username={currentUser.displayName} photoUrl={currentUser.photoURL} />
+                                                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop:'15px' }}>
+                                                        <DeleteButton 
+                                                            name="Delete Comment" 
+                                                            onClick={() => handleDeleteComment(reservation)} 
+                                                        />
+                                                    </Box>
+                                                </Box>
+                                            ))
+                                        ) : (
+                                            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                <DeleteButton 
+                                                    name="Add Comment" 
+                                                    onClick={() => handleOpenCommentDialog(reservation)} 
+                                                />
+                                            </Box>
+                                        )
+                                    ) : null}
                                 </Box>
                             </CardContent>
                             <CardActions sx={{ justifyContent: 'flex-end' }}>
-                            {new Date(reservation.CheckOut) >= new Date() ? (
-                                <DeleteButton name={"Delete"} onClick={() => handleOpenDelete(reservation)}></DeleteButton>
-                            ) : (
-                                <DeleteButton name={"Add Comment"} onClick={() => console.log(reservation)}></DeleteButton>
-                            )}
+                            {new Date(reservation.CheckOut) >= new Date() && (
+                                    <DeleteButton name="Delete" onClick={() => handleOpenDelete(reservation)} />
+                                )}
                         </CardActions>
                             <DeleteReservationDialog
                                 open={openDelete}
                                 onClose={handleCloseDelete}
                                 reservation={reservation}
                                 onDelete={handleDeleteReservation}
+                            />
+                            <CommentDialog
+                                open={openCommentDialog}
+                                reservation={selectedReservation}
+                                onClose={handleCloseCommentDialog}
+                                onCommentSubmit={handleAddComment}
                             />
                         </Card>
                     ))
