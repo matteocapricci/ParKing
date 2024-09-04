@@ -1,12 +1,6 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import DestinationForm from "../components/DestinationForm";
-import theme from "../style/palette";
-import {
-    displayStyle,
-    titleStyle,
-    subtitleStyle,
-} from '../style/styles.js';
+import Header from "../components/Header.js";
+import Footer from "../components/Footer.js";
+import DestinationForm from "../components/DestinationForm.js";
 import CenterLogo from "../components/CenterLogo.js";
 import PageContainer from '../components/PageContainer.js';
 
@@ -17,6 +11,7 @@ function DefaultHomepage() {
         padding: '20px', 
         backgroundColor: '#f8f8f8',
     };
+
 
     return (
         <div>

@@ -50,7 +50,7 @@ function Header({page}) {
 
     return (
         <Box style={headerStyle} display="flex" alignItems="center">
-            <img src="/logos/parking_logo.png" alt="logo" style={logoStyle} />
+            <img src="/logos/parking_logo.png" alt="logo" style={logoStyle} onClick={() => navigate('/')}/>
             <Box style={buttonGroupStyle}>
             {userLoggedIn ? (
                 <ButtonGroup variant="text">

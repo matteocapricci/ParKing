@@ -12,11 +12,11 @@ function CustomButton({ name, size, variant, onClick }) {
       sx={{
         backgroundColor: isHovered ? theme.palette.secondary.dark : theme.palette.primary.main,
         color: theme.palette.secondary.light,
-        border: theme.palette.primary.dark,
+        border: theme.palette.primary.dark
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={onClick}
+      onClick={onClick} // Directly use onClick here
     >
       {name}
     </Button>

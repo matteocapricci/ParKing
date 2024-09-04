@@ -6,12 +6,15 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import ShowParkingMapResult from './pages/ShowParkingMapResult';
+import { Provider } from 'react-redux';
+import store from "./store/App";
 import theme from "./style/palette";
 import {ThemeProvider} from "@emotion/react";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Routes>
             <Route path="/" element={<DefaultHomepage />}/>
@@ -22,6 +25,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
+    </Provider>  
   );
 }
 

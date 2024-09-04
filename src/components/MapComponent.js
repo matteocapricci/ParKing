@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { TileLayer, MapContainer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { useDispatch, useSelector } from "react-redux";
+import { setLatitude, setLongitude } from '../store/App.js';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -11,163 +13,31 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const SearchBox = ({ onSearch, suggestions, onSelectSuggestion }) => {
-  const [query, setQuery] = useState('');
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    onSearch(query);
-  };
-
-  const handleChange = (e) => {
-    setQuery(e.target.value);
-    onSearch(e.target.value);
-  };
-
-  return (
-    <div style={{ position: 'relative', marginBottom: '10px' }}>
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          value={query}
-          onChange={handleChange}
-          placeholder="Cerca una città"
-          style={{
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            width: '80%',
-            marginRight: '10px',
-          }}
-        />
-        <button type="submit" style={{ padding: '8px 12px', borderRadius: '4px', border: 'none', backgroundColor: '#007BFF', color: 'white' }}>
-          Cerca
-        </button>
-      </form>
-      {suggestions.length > 0 && (
-        <ul style={{
-          listStyleType: 'none',
-          padding: '0',
-          margin: '4px 0',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          backgroundColor: 'white',
-          position: 'absolute',
-          width: '80%',
-          zIndex: 1000,
-        }}>
-          {suggestions.map((suggestion, index) => (
-            <li 
-              key={index}
-              onClick={() => onSelectSuggestion(suggestion)}
-              style={{
-                padding: '8px',
-                cursor: 'pointer',
-                borderBottom: index !== suggestions.length - 1 ? '1px solid #ccc' : 'none'
-              }}
-            >
-              {suggestion.display_name}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-};
-
 const MapComponent = () => {
-  const [position, setPosition] = useState([51.505, -0.09]); // Posizione di default (Londra)
+  const dispatch = useDispatch();
+
+  const latitude = useSelector(state => state.setDestinationFormField.lat);
+  const longitude = useSelector(state => state.setDestinationFormField.lon);
+
+  const [position, setPosition] = useState([latitude, longitude]); // Posizione di default
   const [userLocation, setUserLocation] = useState(null);
-  const [suggestions, setSuggestions] = useState([]);
+  const [zoom, setZoom] = useState(15)
   const mapRef = useRef();
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation([latitude, longitude]);
-          setPosition([latitude, longitude]);
-
-          // Centrare la mappa sulla posizione attuale
-          if (mapRef.current) {
-            mapRef.current.setView([latitude, longitude], 13);
-          }
-        },
-        (error) => {
-          console.error("Errore nella geolocalizzazione:", error);
-        }
-      );
-    } else {
-      console.error("La geolocalizzazione non è supportata da questo browser.");
+    const map = mapRef.current;
+    if (map) {
+      map.setView([latitude, longitude], map.getZoom()); // Aggiorna la visualizzazione della mappa
     }
-  }, []);
-
-  const handleSearch = (query) => {
-    if (query.length > 2) {
-      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}`;
-
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          setSuggestions(data);
-        })
-        .catch((error) => {
-          console.error("Errore nella ricerca della città:", error);
-        });
-    } else {
-      setSuggestions([]);
-    }
-  };
-
-  const handleSelectSuggestion = (suggestion) => {
-    const { lat, lon } = suggestion;
-    const newPosition = [parseFloat(lat), parseFloat(lon)];
-
-    setPosition(newPosition);
-    setSuggestions([]);
-
-    // Centrare la mappa sulla città cercata
-    if (mapRef.current) {
-      mapRef.current.setView(newPosition, 13);
-    }
-  };
-
-  const handleCurrentLocationClick = () => {
-    if (userLocation) {
-      setPosition(userLocation);
-
-      if (mapRef.current) {
-        mapRef.current.setView(userLocation, 13);
-      }
-    }
-  };
+    setPosition([latitude, longitude]);
+  }, [latitude, longitude]);
 
   return (
     <div>
-      <SearchBox 
-        onSearch={handleSearch} 
-        suggestions={suggestions} 
-        onSelectSuggestion={handleSelectSuggestion} 
-      />
-      <button 
-        onClick={handleCurrentLocationClick}
-        style={{
-          padding: '8px 12px',
-          borderRadius: '4px',
-          border: 'none',
-          backgroundColor: '#28a745',
-          color: 'white',
-          marginBottom: '10px',
-          cursor: 'pointer'
-        }}
-      >
-        Torna alla mia posizione
-      </button>
       <MapContainer 
         center={position} 
-        zoom={13} 
-        style={{ height: '400px', width: '100%' }} 
+        zoom={zoom}
+        style={{ height: '700px', width: '100%' }} 
         ref={mapRef}
       >
         <TileLayer
