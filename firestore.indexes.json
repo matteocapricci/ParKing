@@ -1,0 +1,91 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "Parking",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "avg_rating",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "location.latitude",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "location.longitude",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Parking",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "avg_rating",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "location.latitude",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "location.longitude",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Parking",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "location.latitude",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "location.longitude",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Parking",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "timePrice",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "location.latitude",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "location.longitude",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Parking",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "timePrice",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "location.latitude",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "location.longitude",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

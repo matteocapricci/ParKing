@@ -1,6 +1,6 @@
 // src/components/CommentCard.js
 import React from 'react';
-import { Card, CardContent, Typography, Avatar, Box, Rating } from '@mui/material';
+import { Card, CardContent, Typography, Avatar, Box } from '@mui/material';
 import CarRating from './CarRating'; 
 import { styled } from '@mui/system';
 import theme from '../style/palette';
@@ -9,7 +9,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
     borderRadius: '12px',
     backgroundColor: '#f8f7b1', 
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-    marginBottom: '15px',
+    marginBottom: '10px',
     maxWidth: '400px',
     margin: '0 auto', 
     padding: '10px',
@@ -60,15 +60,9 @@ const CommentCard = ({ comment, username, photoUrl }) => {
                         </Typography>
                     </Box>
                 </AvatarWrapper>
-                <CommentText>
+                <CommentText  sx={{ display: 'flex', justifyContent: 'flex-end', padding: '10px', fontStyle: 'italic' }}>
                     {comment.text}
                 </CommentText>
-                <Rating
-                    name="read-only"
-                    value={comment.rating}
-                    readOnly
-                    sx={{ color: theme.palette.secondary.main }}
-                />
                 <CarRating rating={comment.rating} />
             </CardContent>
         </StyledCard>

@@ -5,6 +5,7 @@ import DefaultHomepage from './pages/DefaultHomepage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
+import Admin from './pages/Admin';
 import ShowParkingMapResult from './pages/ShowParkingMapResult';
 import { Provider } from 'react-redux';
 import store from "./store/App";
@@ -22,6 +23,7 @@ function App() {
             <Route path="/signup" element={<Signup/>} />
             <Route path="/resultList" element={<ShowParkingMapResult/>} />
             <Route path="/profile" element={<Profile/>} />
+            <Route path="/admin" element={<Admin/>} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

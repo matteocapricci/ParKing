@@ -265,3 +265,24 @@ export const load_docs_by_attributes = async function (collection_name, attribut
         error();
     }
 }
+
+export const load_all_docs = async function (collection_name, postprocessing = () => {}, error = () => {}, empty = () => {}) {
+    try {
+        const coll_ref = collection(db, collection_name);
+        
+        const snapshot = await getDocs(coll_ref);
+
+        if (snapshot.empty) {
+            console.log("Collection is empty");
+            empty();
+            return [];
+        } else {
+            const result = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            postprocessing(result);
+            return result;
+        }
+    } catch (e) {
+        console.log(e);
+        error();
+    }
+}

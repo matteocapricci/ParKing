@@ -18,7 +18,7 @@ const carValueStyle = {
 const CarRating = ({ rating }) => {
     const fullCars = Math.floor(rating);
     const halfCar = rating % 1 >= 0.5;
-    const emptyCars = 5 - Math.ceil(rating);
+    const emptyCars = 5 - fullCars - (halfCar ? 1 : 0);
 
     return (
         <div style={ratingStyle}>
@@ -26,10 +26,10 @@ const CarRating = ({ rating }) => {
                 <FontAwesomeIcon icon={faCar} style={carValueStyle} key={`full-${index}`} />
             ))}
             {halfCar && (
-                <FontAwesomeIcon icon={faCar} style={carValueStyle} key="half" />
+                <FontAwesomeIcon icon={faCar} style={{ ...carValueStyle, opacity: 0.5 }} key="half" />
             )}
             {[...Array(emptyCars)].map((_, index) => (
-                <FontAwesomeIcon icon={faCar} style={carValueStyle} key={`empty-${index}`} />
+                <FontAwesomeIcon icon={faCar} style={{ ...carValueStyle, opacity: 0.2 }} key={`empty-${index}`} />
             ))}
             {rating.toFixed(1)}
         </div>

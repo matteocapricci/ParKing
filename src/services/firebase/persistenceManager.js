@@ -184,3 +184,16 @@ export const load_docs_by_attributes = async function(collection_name, attribute
 }){
     return database.load_docs_by_attributes(collection_name, attributes_name_value, order_by, order_direction, limit_number, error, postprocessing)
 }
+
+
+/**
+ * Load all documents from a specified collection in the database.
+ * @param {string} collection_name - The name of the collection to fetch documents from.
+ * @param {function(Array)} postprocessing - A callback function to process the fetched data.
+ * @param {function} [error=()=>{}] - A callback function to handle errors.
+ * @param {function} [empty=()=>{}] - A callback function to handle the case when the collection is empty.
+ * @returns {Promise<Array>} - A promise that resolves to an array of documents from the collection.
+ */
+export const load_all_docs = async function (collection_name, postprocessing, error = () => {}, empty = () => {}) {
+    return database.load_all_docs(collection_name, postprocessing, error, empty);
+}

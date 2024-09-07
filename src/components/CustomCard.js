@@ -7,10 +7,11 @@ const CustomCard = ({ horizontal, maxWidth, contentWidth, img, children }) => {
                 display: 'flex', 
                 flexDirection: horizontal ? 'row' : 'column', 
                 maxWidth: maxWidth, 
-                marginLeft: '20px', 
+                margin: '10px',
                 justifyContent: 'center', 
                 alignItems: 'center',
-                textAlign: 'center'  // Optional: centers the text inside the CardContent
+                textAlign: 'center', 
+                width: '100%' 
             }}>
             <CardContent sx={{ 
                 width: contentWidth, 

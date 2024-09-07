@@ -16,13 +16,16 @@ export const displayStyle = {
     backgroundColor: theme.palette.info.light
 };
   
- export const containerStyle = {
+export const containerStyle = {
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '95vh',
+    height: '100vh', 
+    maxHeight: '100vh', 
     backgroundColor: theme.palette.info.light,
-    flexDirection: 'column'
+    marginBottom: '20px',
+    width: '100%',
 };
   
 export const logoStyle = {
@@ -180,4 +183,26 @@ export const resultCardListStyle = {
     scrollbarWidth: 'thin',
     scrollbarColor: `${theme.palette.secondary.main} ${theme.palette.background.paper}`,
 };
+
+export const resultCommentListStyle = {
+    overflowY: 'auto',
+    maxHeight: '290px',
+    paddingRight: '10px',
+    '&::-webkit-scrollbar': {
+        width: '12px',
+    },
+    '&::-webkit-scrollbar-track': {
+        background: '#f1f1f1',
+    },
+    '&::-webkit-scrollbar-thumb': {
+        background: '#888',
+        borderRadius: '6px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+        background: '#555',
+    },
+    scrollbarWidth: 'thin',
+    scrollbarColor: `${theme.palette.secondary.main} ${theme.palette.background.paper}`,
+};
+
 
