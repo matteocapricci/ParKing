@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import ShowParkingMapResult from './pages/ShowParkingMapResult';
+import ShowParkingDetail from './pages/ShowParkingDetail'
 import { Provider } from 'react-redux';
 import store from "./store/App";
 import theme from "./style/palette";
@@ -22,6 +23,7 @@ function App() {
             <Route path="/signup" element={<Signup/>} />
             <Route path="/resultList" element={<ShowParkingMapResult/>} />
             <Route path="/profile" element={<Profile/>} />
+            <Route path="/parkingDetail" element={<ShowParkingDetail/>} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

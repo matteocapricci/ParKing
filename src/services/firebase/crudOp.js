@@ -3,6 +3,8 @@ import { firestore } from "./confFirebase";
 
 const db = firestore;
 
+const DELTAKM = 0.2;
+
 export const store_doc =  async function (obj, collection_name, error= ()=>{}, postprocessing = ()=>{}) {
     try {
         if( typeof(obj) == "function"){
@@ -190,6 +192,28 @@ export const load_ordered_docs = async function (collection_name, order_by_field
     
 }
 
+export const load_by_doc_id = async (collection, docId) => {
+    try {
+      // Crea un riferimento al documento specifico tramite il suo doc_id
+      const docRef = doc(db, collection, docId);
+      
+      // Recupera il documento
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+        // Se il documento esiste, ritorna i dati
+        console.log("Document data:", docSnap.data());
+        return docSnap.data();
+      } else {
+        // Il documento non esiste
+        console.log("No such document!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching document:", error);
+    }
+  };
+
 export const get_docs_by_attribute = async function(attribute, collection_name, attribute_name, limit_number=null, order_by =null, order_direction = "asc", error = ()=>{}, postprocessing = ()=>{}, do_not_exist = ()=>{}){
     try{
         // preprocessing
@@ -258,6 +282,44 @@ export const load_docs_by_attributes = async function (collection_name, attribut
             });
         });
 
+        postprocessing(result);
+        return result;
+    } catch (e) {
+        console.log(e);
+        error();
+    }
+}
+
+export const load_parkingNearSerchedPosition = async function ( latitude_attribute, longitude_attribute, error = () => {}, postprocessing = () => {} ) {
+    try {
+        console.log(latitude_attribute)
+        console.log(longitude_attribute)
+        const deltaPosition = {
+            "latMax": latitude_attribute + DELTAKM,
+            "latMin": latitude_attribute - DELTAKM,
+            "lonMax": longitude_attribute + DELTAKM,
+            "lonMin": longitude_attribute - DELTAKM
+        }
+        
+        let col = collection(db, 'Parking'); 
+        let q = query(col, where('location.latitude', '>=', deltaPosition.latMin));
+        q = query(q, where('location.latitude', '<=', deltaPosition.latMax));
+        q = query(q, where('location.longitude', '>=', deltaPosition.lonMin));
+        q = query(q, where('location.longitude', '<=', deltaPosition.lonMax));
+
+        console.log(q)
+
+        let snapshot = await getDocs(q);
+
+        let result = [];
+        snapshot.forEach((snap_item) => {
+            result.push({
+                ...snap_item.data(),
+                doc_id: snap_item.id
+            });
+        });
+
+        
         postprocessing(result);
         return result;
     } catch (e) {

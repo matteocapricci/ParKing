@@ -184,3 +184,15 @@ export const load_docs_by_attributes = async function(collection_name, attribute
 }){
     return database.load_docs_by_attributes(collection_name, attributes_name_value, order_by, order_direction, limit_number, error, postprocessing)
 }
+
+/**
+ * 
+ * @param {} latitude_attribute 
+ * @param {*} longitude_attribute 
+ * @param {*} error 
+ * @param {*} postprocessing 
+ * @returns 
+ */
+export const load_parkingNearSerchedPosition = async function(latitude_attribute, longitude_attribute, error = () => {}, postprocessing = () => {} ){
+    return database.load_parkingNearSerchedPosition(latitude_attribute, longitude_attribute, error, postprocessing)
+}

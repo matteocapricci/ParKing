@@ -11,7 +11,8 @@ import {
 import theme from '../style/palette.js';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { setDestination, setDateIn, setDateOut, setTransport, setLatitude, setLongitude } from '../store/App.js';
+import { setDestination, setDateIn, setDateOut, setTransport, setLatitude, setLongitude, setSearchedParkings, setNewSearch } from '../store/App.js';
+import { load_parkingNearSerchedPosition } from '../services/firebase/persistenceManager.js';
 
 const DestinationForm = () => {
     const dispatch = useDispatch();
@@ -27,11 +28,37 @@ const DestinationForm = () => {
     const dateOut = useSelector(state => state.setDestinationFormField.dateOut);
     const transport = useSelector(state => state.setDestinationFormField.transport);
 
-    const [lat, setLat] = useState('')
-    const [lon, setLon] = useState('')
+    let lat = useSelector(state => state.setDestinationFormField.lat);
+    let lon = useSelector(state => state.setDestinationFormField.lon);
 
-
-    console.log()
+    const parks = {
+        "doc_id": "parking_003",
+        "nome": "Parcheggio N3",
+        "descrizione": "Secure and affordable parking in the heart of the city, within walking distance to major attractions and shopping centers.",
+        "location": {
+          "address": "Via Fontanelle",
+          "city": "Metropolis",
+          "state": "NY",
+          "postal_code": "10001",
+          "latitude": 42.399613,
+          "longitude": 14.1959269
+        },
+        "timePrice": 7.00,
+        "parkingSlots": [
+            {name:'Car1', size: 'Car'},
+            {name:'Car2', size: 'Car'}
+        ],
+        "services":[
+            {name:'Car Wash', price: 20.00}, 
+            {name:'Valet Parking', price: 50.00},
+            {name:'Helmet Storage',price: 40.00}, 
+            {name:'Bike Wash', price: 80.00}
+        ],
+        "photo_urls": [
+          "https://firebasestorage.googleapis.com/v0/b/parking-11ff0.appspot.com/o/UserImages%2Fmarco.cattaneo%40gmail.com_ProPic?alt=media&token=05f2b507-56f0-4806-80b4-6065aae9d6e3",
+          "https://firebasestorage.googleapis.com/v0/b/parking-11ff0.appspot.com/o/UserImages%2Ftest%40gmail.com_ProPic?alt=media&token=2ef2b796-bfe0-4ba7-953a-b897d6103e6d"
+        ]
+      } 
 
     const radioGroupStyle = {
         display: 'flex',
@@ -89,14 +116,24 @@ const DestinationForm = () => {
     // Function to handle suggestion selection
     const handleSelectSuggestion = (suggestion) => {
         dispatch(setDestination(suggestion.properties.formatted));
-        setLat(suggestion.properties.lat);
-        setLon(suggestion.properties.lon);
+        dispatch(setLatitude(suggestion.properties.lat));
+        dispatch(setLongitude(suggestion.properties.lon));
         setSuggestions([]);
     };
 
+    const retriveParkingList = async () => {
+        let retrivedParking = []; 
+        try {
+            retrivedParking = await load_parkingNearSerchedPosition(lat, lon);
+            console.log(retrivedParking)
+            dispatch(setSearchedParkings(retrivedParking))
+        } catch (e) {
+            console.log("ERRORE")
+        }
+    }
+
     // Function called when the form is submitted
-    const handleSave = (event) => {
-        console.log(lon)
+    const handleSave = async (event) => {
         event.preventDefault();
         setDestinationError('');
         setDateError('');
@@ -109,7 +146,7 @@ const DestinationForm = () => {
         } else if (destination.length < 3) {
             setDestinationError("Please enter at least 3 characters for suggestions");
             hasError = true;
-        } else if (lon == '' || lat == '') {
+        } else if (lon === '' || lat === '') {
             setDestinationError("Please choose one of the suggestions listed");
             hasError = true;
         } else if (!dateIn.trim()) {
@@ -123,14 +160,11 @@ const DestinationForm = () => {
             hasError = true;
         }
 
-        setLon('')
-        setLat('')
-
         if (hasError) {
             return;
         } else {
-            dispatch(setLatitude(lat));
-            dispatch(setLongitude(lon));
+            retriveParkingList();
+            dispatch(setNewSearch());
             navigate("/resultList");
         }
     };
