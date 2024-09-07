@@ -8,6 +8,8 @@ import { setSelectedParking } from '../store/App.js';
 import { Box, Chip, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SimpleSlider from './SimpleSlider.js';
+import { alignProperty } from '@mui/material/styles/cssUtils.js';
+import { BorderLeft } from '@mui/icons-material';
 
 const ParkingCard = ({ id, name, address, photo_urls, description, services, rating, price }) => {
 
@@ -51,9 +53,9 @@ const ParkingCard = ({ id, name, address, photo_urls, description, services, rat
 
     const priceStyle = {
         fontSize: '18px',
-        color: theme.palette.primary.dark,
+        color: theme.palette.success.main,
         fontWeight: 'bold',
-        marginTop: '20px'
+        marginTop: '30px',
     };
 
     const handleClick = async (event) => {

@@ -11,7 +11,7 @@ function ParkingCardResultList() {
     dispatch(resetSelectedParking())
 
     return (
-        <div style={{marginRight: "20px"}}>
+        <div>
             {parkings.length > 0 ? (
                 parkings.map((parking, index) => (
                     <ParkingCard 

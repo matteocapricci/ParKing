@@ -193,10 +193,9 @@ export const load_docs_by_attributes = async function(collection_name, attribute
  * @param {*} postprocessing 
  * @returns 
  */
-export const load_parkingNearSerchedPosition = async function(latitude_attribute, longitude_attribute, error = () => {}, postprocessing = () => {} ){
-    return database.load_parkingNearSerchedPosition(latitude_attribute, longitude_attribute, error, postprocessing)
+export const load_parkingNearSerchedPosition = async function(latitude_attribute, longitude_attribute, order_by, error = () => {}, postprocessing = () => {} ){
+    return database.load_parkingNearSerchedPosition(latitude_attribute, longitude_attribute, order_by, error, postprocessing)
 }
-
 
 /**
  * Load all documents from a specified collection in the database.

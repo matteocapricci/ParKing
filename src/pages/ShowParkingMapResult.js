@@ -5,8 +5,11 @@ import {
 } from '../style/styles.js';
 import DestinationForm from "../components/DestinationForm.js";
 import MapComponent from "../components/MapComponent.js";
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import ParkingCardResultList from "../components/ParkingCardResultList.js";
+import BackButton from "../components/BackButton.js";
+import SortDropdown from "../components/SortDropdown.js";
+import { resultCardListStyle } from '../style/styles';
 
 function ShowParkingMapResult(){
 
@@ -16,9 +19,13 @@ function ShowParkingMapResult(){
             <h1 style={h1}>Available Parking Spots</h1>
             <Grid container spacing={4} alignItems="flex-start" justifyContent="center" sx={{ marginTop: '15px' }}>
                     <Grid item md={2} style={{ padding: 0 }}>
-                        <div style={{ maxHeight: '700px', overflowY: 'auto'}}>
-                            <ParkingCardResultList />
+                        <div style={{display: 'flex'}}>
+                            <BackButton />
+                            <SortDropdown />
                         </div>
+                        <Box sx={{...resultCardListStyle, marginRight: '15px'}}>
+                            <ParkingCardResultList />
+                        </Box>
                     </Grid>
                     <Grid item md={6} style={{ padding: 0 }}>
                         <MapComponent />

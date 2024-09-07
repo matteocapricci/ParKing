@@ -124,7 +124,7 @@ const DestinationForm = () => {
     const retriveParkingList = async () => {
         let retrivedParking = []; 
         try {
-            retrivedParking = await load_parkingNearSerchedPosition(lat, lon);
+            retrivedParking = await load_parkingNearSerchedPosition(lat, lon, null);
             console.log(retrivedParking)
             dispatch(setSearchedParkings(retrivedParking))
         } catch (e) {

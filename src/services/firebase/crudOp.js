@@ -290,10 +290,8 @@ export const load_docs_by_attributes = async function (collection_name, attribut
     }
 }
 
-export const load_parkingNearSerchedPosition = async function ( latitude_attribute, longitude_attribute, error = () => {}, postprocessing = () => {} ) {
+export const load_parkingNearSerchedPosition = async function ( latitude_attribute, longitude_attribute, order_by, error = () => {}, postprocessing = () => {} ) {
     try {
-        console.log(latitude_attribute)
-        console.log(longitude_attribute)
         const deltaPosition = {
             "latMax": latitude_attribute + DELTAKM,
             "latMin": latitude_attribute - DELTAKM,
@@ -302,12 +300,18 @@ export const load_parkingNearSerchedPosition = async function ( latitude_attribu
         }
         
         let col = collection(db, 'Parking'); 
-        let q = query(col, where('location.latitude', '>=', deltaPosition.latMin));
+        let q = query(col);
+        if (order_by !== 'default') {
+            if (order_by === "rating"){
+                q = query(q, orderBy('avg_rating', 'desc'));
+            } else {
+                q = query(q, orderBy('timePrice', 'asc'));
+            }
+        }
+        q = query(q, where('location.latitude', '>=', deltaPosition.latMin));
         q = query(q, where('location.latitude', '<=', deltaPosition.latMax));
         q = query(q, where('location.longitude', '>=', deltaPosition.lonMin));
         q = query(q, where('location.longitude', '<=', deltaPosition.lonMax));
-
-        console.log(q)
 
         let snapshot = await getDocs(q);
 
@@ -318,7 +322,6 @@ export const load_parkingNearSerchedPosition = async function ( latitude_attribu
                 doc_id: snap_item.id
             });
         });
-
         
         postprocessing(result);
         return result;
@@ -327,6 +330,7 @@ export const load_parkingNearSerchedPosition = async function ( latitude_attribu
         error();
     }
 }
+
 
 export const load_all_docs = async function (collection_name, postprocessing = () => {}, error = () => {}, empty = () => {}) {
     try {
