@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TileLayer, MapContainer, Marker, Popup } from 'react-leaflet';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCar } from '@fortawesome/free-solid-svg-icons';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import theme from '../style/palette.js';
@@ -19,6 +21,7 @@ const MapComponent = () => {
   const latitude = useSelector(state => state.setDestinationFormField.lat);
   const longitude = useSelector(state => state.setDestinationFormField.lon);
   const parkings = useSelector(state => state.searchedParkings.searchedParkings);
+  const park = useSelector(state => state.selectedParking.selectedParking)
 
   let newSearch = useSelector(state => state.newSearch.search)
 
@@ -35,6 +38,18 @@ const MapComponent = () => {
     setZoom(12)
   }, [newSearch]);
 
+  const ratingStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '10px',
+    color: theme.palette.primary.light
+  };
+
+  const carValueStyle = {
+      color: theme.palette.secondary.dark,
+      marginRight: '5px'
+  };
+
   return (
     <div style={{border: `2px solid ${theme.palette.secondary.main}`}}>
       <MapContainer 
@@ -47,20 +62,45 @@ const MapComponent = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        {/* Marker per i parcheggi nella lista parkings */}
-        {parkings.map((parking, index) => (
+        {park === null ? (
+          parkings.map((parking, index) => (
           <Marker
             key={index}
             position={[parking.location.latitude, parking.location.longitude]}
           >
             <Popup>
               <p style={{color: theme.palette.primary.main}}> 
-                <b>{parking.nome}</b> <br/>
-                {parking.location.address}
+                <b>{parking.name}</b> <br/>
+                {parking.location.address} <br/>
+                <div style={ratingStyle}>
+                  {[...Array(Math.floor(parking.avg_rating))].map((_, i) => (
+                      <FontAwesomeIcon icon={faCar} style={carValueStyle} key={i} />
+                  ))}
+                  {parking.avg_rating.toFixed(1)}
+                </div>
               </p>
             </Popup>
           </Marker>
-        ))}
+          ))
+        ) :(
+          <Marker
+            position={[park.location.latitude, park.location.longitude]}
+          >
+            <Popup>
+              <p style={{color: theme.palette.primary.main}}> 
+                <b>{park.name}</b> <br/>
+                {park.location.address} <br/>
+                <div style={ratingStyle}>
+                  {[...Array(Math.floor(park.avg_rating))].map((_, i) => (
+                      <FontAwesomeIcon icon={faCar} style={carValueStyle} key={i} />
+                  ))}
+                  {park.avg_rating.toFixed(1)}
+                </div>
+              </p>
+            </Popup>
+          </Marker>
+        )}
+        
       </MapContainer>
     </div>
   );

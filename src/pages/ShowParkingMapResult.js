@@ -16,7 +16,7 @@ function ShowParkingMapResult(){
             <h1 style={h1}>Available Parking Spots</h1>
             <Grid container spacing={4} alignItems="flex-start" justifyContent="center" sx={{ marginTop: '15px' }}>
                     <Grid item md={2} style={{ padding: 0 }}>
-                        <div style={{ maxHeight: '700px', overflowY: 'auto', paddingRight: '10px' }}>
+                        <div style={{ maxHeight: '700px', overflowY: 'auto'}}>
                             <ParkingCardResultList />
                         </div>
                     </Grid>

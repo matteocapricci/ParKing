@@ -19,7 +19,7 @@ function ParkingCardResultList() {
                         id={parking.doc_id}
                         name={parking.name}
                         address={parking.location.address}
-                        rating={4.5} 
+                        rating={parking.avg_rating} 
                         price={parking.timePrice} 
                     />
                 ))
