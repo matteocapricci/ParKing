@@ -35,3 +35,28 @@ export const updateDestinationFormSlice = createSlice({
         resetForm: () => initialState,
     },
 });
+
+export const searchedParkingsSlice = createSlice({
+    name: 'searchedParkings',
+    initialState: {
+       searchedParkings: []
+    },
+    reducers: {
+        setSearchedParkings: (state, action) => {
+            state.searchedParkings = action.payload;
+        }
+    },
+});
+
+export const newSearchSlice = createSlice({
+    name: 'newSearch',
+    initialState:{
+        search: 0
+    },
+    reducers:{
+        setNewSearch: (state, action) => {
+            state.search += 1 
+        }
+    }
+
+})

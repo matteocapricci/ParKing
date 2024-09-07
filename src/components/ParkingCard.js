@@ -1,15 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCar } from '@fortawesome/free-solid-svg-icons';
 import theme from '../style/palette.js';
-import { colors } from '@mui/material';
+import { load_by_doc_id, load_docs } from '../services/firebase/crudOp.js';
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedParking } from '../store/App.js';
+import { Box, Chip, Divider } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import SimpleSlider from './SimpleSlider.js';
 
-const ParkingCard = ({ name, address, rating, price }) => {
+const ParkingCard = ({ id, name, address, photo_urls, description, services, rating, price }) => {
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const parking = useSelector(state => state.selectedParking.selectedParking)
+
     const cardStyle = {
         border: '1px solid #ddd',
         borderRadius: '8px',
         padding: '20px',
-        maxWidth: '300px',
+        maxWidth: '500px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         backgroundColor: '#fff',
         margin: '10px',
@@ -41,12 +51,26 @@ const ParkingCard = ({ name, address, rating, price }) => {
 
     const priceStyle = {
         fontSize: '18px',
+        color: theme.palette.primary.dark,
         fontWeight: 'bold',
-        color: theme.palette.primary.dark
+        marginTop: '20px'
     };
 
+    const handleClick = async (event) => {
+
+        console.log(parking)
+
+        if (parking === null){
+            event.preventDefault();
+            let park = await load_by_doc_id("Parking", id);
+            dispatch(setSelectedParking(park));
+            navigate('/parkingDetail')
+        }
+
+    }
+
     return (
-        <div style={cardStyle}>
+        <div style={cardStyle} onClick={handleClick}>
             <div style={nameStyle}>{name}</div>
             <div style={addressStyle}>{address}</div>
             <div style={ratingStyle}>
@@ -55,7 +79,21 @@ const ParkingCard = ({ name, address, rating, price }) => {
                 ))}
                 {rating.toFixed(1)}
             </div>
-            <div style={priceStyle}>{`€${price} / hour`}</div>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                {photo_urls && <SimpleSlider images={parking.photo_urls}/>}
+            </div>
+            <div style={priceStyle}>{`€${price} / hour`}</div><br/>
+            {services && 
+            <Box display="flex" flexDirection="column" gap="5px">
+                <Divider sx={{ marginY: '10px' }} />
+                {description && <div style={{color: theme.palette.primary.main, marginBottom: '10px'}}>
+                    <b>Description: </b><br/>{description}
+                    </div>}
+                <div style={{color: theme.palette.secondary.main, marginBottom: '5px'}}><b>Available services:</b></div>
+                {services.map((service, index) => (
+                   <Chip key={index} label={service.name + ": " + service.price + "€"} color="secondary" variant="outlined" />
+                ))}
+            </Box>}
         </div>
     );
 };
