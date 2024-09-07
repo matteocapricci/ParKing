@@ -8,7 +8,6 @@ const SortDropdown = ({ onSortChange }) => {
   const [sortOption, setSortOption] = useState('default');
 
   const dispatch = useDispatch();
-
   let lat = useSelector(state => state.setDestinationFormField.lat);
   let lon = useSelector(state => state.setDestinationFormField.lon);
 
@@ -16,33 +15,58 @@ const SortDropdown = ({ onSortChange }) => {
     const selectedOption = event.target.value;
     let retrivedParking = []; 
     try {
-        console.log(lat);
-        console.log(lon);
-        console.log(selectedOption);
         retrivedParking = await load_parkingNearSerchedPosition(lat, lon, selectedOption);
-        console.log(retrivedParking);
-        setSortOption(selectedOption)
-        dispatch(setSearchedParkings(retrivedParking))
+        setSortOption(selectedOption);
+        dispatch(setSearchedParkings(retrivedParking));
     } catch (e) {
-        console.log("ERRORE")
+        console.log("ERRORE");
     }
   };
 
+  // Responsive style
+  const containerStyle = {
+    padding: '10px 5%',
+    fontSize: '18px',
+    color: theme.palette.primary.main,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '10px',
+    '@media (min-width: 600px)': {
+      flexDirection: 'row', // Row layout for larger screens
+    },
+  };
+
+  const selectStyle = {
+    padding: '8px 12px',
+    borderRadius: '5px',
+    border: `2px solid ${theme.palette.primary.main}`,
+    backgroundColor: 'transparent',
+    color: theme.palette.primary.main,
+    fontSize: '16px',
+    cursor: 'pointer',
+    width: '100%', // Full width on small screens
+    maxWidth: '300px', // Limit width on larger screens
+    '@media (min-width: 600px)': {
+      width: 'auto', // Auto width for larger screens
+    },
+  };
+
+  const labelStyle = {
+    marginRight: '10px',
+    fontSize: '16px',
+    '@media (min-width: 600px)': {
+      fontSize: '18px', // Larger font size for larger screens
+    },
+  };
+
   return (
-    <div style={{ padding: '10px 20px', fontSize: '18px', color: theme.palette.primary.main }}>
-      <label style={{ marginRight: '10px' }}>Sort by:</label>
+    <div style={containerStyle}>
+      <label style={labelStyle}>Sort by:</label>
       <select 
         value={sortOption} 
         onChange={handleSortChange}
-        style={{
-          padding: '10px',
-          borderRadius: '5px',
-          border: `2px solid ${theme.palette.primary.main}`,
-          backgroundColor: 'transparent',
-          color: theme.palette.primary.main,
-          fontSize: '16px',
-          cursor: 'pointer',
-        }}
+        style={selectStyle}
       >
         <option value="default">-</option>
         <option value="rating">Rating</option>
