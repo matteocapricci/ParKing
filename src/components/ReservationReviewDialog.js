@@ -8,8 +8,10 @@ import { useNavigate } from 'react-router-dom';  // Importa useNavigate
 import { auth } from '../services/firebase/confFirebase.js';
 import theme from '../style/palette.js';
 import { error, input } from '../style/styles.js';
-import { store_doc } from '../services/firebase/crudOp.js';
-import { runTransaction, doc } from "firebase/firestore";
+import { collection, runTransaction, doc } from "firebase/firestore";
+import { firestore } from '../services/firebase/confFirebase.js';
+
+const db = firestore;
 
 
 const ReservationReviewDialog = ({ open, onClose }) => {
