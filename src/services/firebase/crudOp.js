@@ -342,7 +342,11 @@ export const load_parkingNearSerchedPosition = async function ( latitude_attribu
 
         for (let res of result) {
             for (let parkSlot of res.parkingSlots) {
-                let linkedReservations = await load_docs_by_attributes("Reservation", {"parkingId": res.doc_id, "parkingSpot.name": parkSlot.name});
+                console.log(res.doc_id);
+                console.log(parkSlot.name);
+                let linkedReservations = await load_docs_by_attributes("Reservations", {"parkingId": res.doc_id, "parkingSpot.name": parkSlot.name});
+
+                console.log(linkedReservations);
                 
                 if (linkedReservations.length > 0) {
                     let isAvailable = true;

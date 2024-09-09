@@ -7,13 +7,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';  // Importa useNavigate
 import { auth } from '../services/firebase/confFirebase.js';
 import theme from '../style/palette.js';
-import { setTotalCost } from '../store/App.js';
+import { error, input } from '../style/styles.js';
+import { store_doc } from '../services/firebase/crudOp.js';
+import { runTransaction, doc } from "firebase/firestore";
+
 
 const ReservationReviewDialog = ({ open, onClose }) => {
 
     const [currentUser, setCurrentUser] = useState(auth.currentUser);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    function formatDateTime(isoDate) {
+        // Crea un oggetto Date dalla stringa ISO
+        const date = new Date(isoDate);
+    
+        // Ottieni i componenti della data e dell'ora
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Mesi partono da 0, quindi aggiungi 1
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+        // Formatta la data come "YYYY-MM-DD HH:mm"
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
 
     const calculateTotalCost = () => {
         const inDate = new Date(dateIn);
@@ -23,11 +41,15 @@ const ReservationReviewDialog = ({ open, onClose }) => {
     };
 
     const parking = useSelector(state => state.selectedParking.selectedParking);
+
+    console.log(parking);
     const dateIn = useSelector(state => state.setDestinationFormField.dateIn);
     const dateOut = useSelector(state => state.setDestinationFormField.dateOut);
     const transport = useSelector(state => state.setDestinationFormField.transport).toUpperCase();
     let [attualCost, setAttualCost] = useState(calculateTotalCost());
     const [selectedServices, setSelectedServices] = useState([]);
+    const [plate, setPlate] = useState(null);
+    const [plateError, setPlateError] = useState('');
 
     const services = useSelector(state => state.selectedParking.selectedParking.services);
 
@@ -66,11 +88,61 @@ const ReservationReviewDialog = ({ open, onClose }) => {
         });
     };
 
-    const handleConfirmReservationDialog = () => {
-        const newReservation = {
-            parkingName: '', parkingSpot: {name:'Car1', size: 'Car'}, CheckIn: '2023-10-01 15:00', CheckOut: '2023-10-02 15:30', plate: 'ABC123', totalCost: 20.00, Services:[{name:'Car Wash', price: 20.00}, {name:'Valet Parking', price: 50.00}], uid: currentUser.uid 
-        }        
+    function isValidLicensePlate(plate) {
+        if (plate.length !== 7) {
+            return false;
+        }
+        const plateRegex = /^[A-Z]{2}[0-9]{3}[A-Z]{2}$/;
+        return plateRegex.test(plate.toUpperCase());
     }
+
+    const handleConfirmReservationDialog = async () => {
+        if (isValidLicensePlate(plate)) {
+            setPlateError('');
+
+            let availableSpot = null;
+            parking.parkingSlots.forEach(spot => {
+                if (spot.size.toUpperCase() === transport) {
+                    availableSpot = spot;
+                    return;
+                }
+            });
+
+            if (availableSpot !== null) {
+                try {
+                    // Eseguire la transazione
+                    await runTransaction(db, async (transaction) => {
+                        const reservationRef = doc(collection(db, "Reservations"));
+                        
+                        const newReservation = {
+                            parkingName: parking.name,
+                            parkingId: parking.doc_id,
+                            parkingSpot: { name: availableSpot.name, size: availableSpot.size },
+                            CheckIn: formatDateTime(dateIn),
+                            CheckOut: formatDateTime(dateOut),
+                            plate: plate,
+                            totalCost: attualCost,
+                            Services: selectedServices,
+                            uid: currentUser.uid
+                        };
+
+                        // Inserire la nuova prenotazione all'interno della transazione
+                        transaction.set(reservationRef, newReservation);
+                    });
+
+                    // Naviga verso la pagina del profilo se la transazione è riuscita
+                    navigate("/profile");
+
+                } catch (e) {
+                    console.error("Transaction failed: ", e);
+                    // Gestisci l'errore come necessario
+                }
+            } 
+        } else {
+            setPlateError("The plate entered does not comply with the characteristics");
+        }
+    };
+
 
     const handleLoginNavigate = () => {
         navigate('/login');  // Naviga verso la pagina di login
@@ -109,7 +181,18 @@ const ReservationReviewDialog = ({ open, onClose }) => {
                         <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
                         <label style={{fontSize: '18px', color: theme.palette.primary.main}}>
                             <b>Vehicle size selected: </b>{transport} <br />
+                            <b>Please enter your license plate here: </b>
                         </label>
+                        <input 
+                            type="text" 
+                            id="plate" 
+                            name="plate" 
+                            value={plate} 
+                            onChange={(e) => setPlate(e.target.value)}
+                            required 
+                            style={{ ...input, maxWidth: "150px" }}
+                        />
+                        {plateError && <p style={error}>{plateError}</p>}
                         <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
                         <div style={{color: theme.palette.secondary.main, marginBottom: '5px', marginTop: '20px', fontSize: '18px'}}>
                             <b>Available services to add:</b>
