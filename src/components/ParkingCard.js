@@ -8,14 +8,13 @@ import { setSelectedParking } from '../store/App.js';
 import { Box, Chip, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SimpleSlider from './SimpleSlider.js';
-import { alignProperty } from '@mui/material/styles/cssUtils.js';
-import { BorderLeft } from '@mui/icons-material';
 
 const ParkingCard = ({ id, name, address, photo_urls, description, services, rating, price }) => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const parking = useSelector(state => state.selectedParking.selectedParking)
+    const parking = useSelector(state => state.selectedParking.selectedParking);
+    const parkings = useSelector(state => state.searchedParkings.searchedParkings);
 
     const cardStyle = {
         border: '1px solid #ddd',
@@ -65,6 +64,11 @@ const ParkingCard = ({ id, name, address, photo_urls, description, services, rat
         if (parking === null){
             event.preventDefault();
             let park = await load_by_doc_id("Parking", id);
+            parkings.forEach(parking => {
+                if (id === parking.doc_id) {
+                    park.parkingSlots = parking.parkingSlots;
+                }
+            });
             dispatch(setSelectedParking(park));
             navigate('/parkingDetail')
         }

@@ -10,12 +10,15 @@ const SortDropdown = ({ onSortChange }) => {
   const dispatch = useDispatch();
   let lat = useSelector(state => state.setDestinationFormField.lat);
   let lon = useSelector(state => state.setDestinationFormField.lon);
+  const dateIn = useSelector(state => state.setDestinationFormField.dateIn);
+  const dateOut = useSelector(state => state.setDestinationFormField.dateOut);
+  const transport = useSelector(state => state.setDestinationFormField.transport);
 
   const handleSortChange = async (event) => {
     const selectedOption = event.target.value;
     let retrivedParking = []; 
     try {
-        retrivedParking = await load_parkingNearSerchedPosition(lat, lon, selectedOption);
+        retrivedParking = await load_parkingNearSerchedPosition(lat, lon, transport, dateIn, dateOut, selectedOption);
         setSortOption(selectedOption);
         dispatch(setSearchedParkings(retrivedParking));
     } catch (e) {
@@ -69,7 +72,7 @@ const SortDropdown = ({ onSortChange }) => {
         style={selectStyle}
       >
         <option value="default">-</option>
-        <option value="rating">Rating</option>
+        <option value="rating">Best Rating</option>
         <option value="price">Lowest Price</option>
       </select>
     </div>

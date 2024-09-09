@@ -1,3 +1,4 @@
+import React, { useContext, useEffect, useState } from 'react';
 import Header from "../components/Header.js";
 import Footer from "../components/Footer.js";
 import MapComponent from "../components/MapComponent.js";
@@ -9,7 +10,8 @@ import ReservationReview from "../components/ReservationReview.js";
 
 function ShowParkingDetail(){
 
-    const parking = useSelector(state => state.selectedParking.selectedParking)
+    const parking = useSelector(state => state.selectedParking.selectedParking);
+    console.log(parking);
 
     return (
         <div>
