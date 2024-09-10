@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';  // Importa useNavigate
 import { auth } from '../services/firebase/confFirebase.js';
 import theme from '../style/palette.js';
 import { error, input } from '../style/styles.js';
-import { store_by_transaction } from '../services/firebase/crudOp.js';
+import { store_by_transaction } from '../services/firebase/persistenceManager.js';
 
 const ReservationReviewDialog = ({ open, onClose }) => {
 
