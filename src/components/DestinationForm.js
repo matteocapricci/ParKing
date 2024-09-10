@@ -11,7 +11,7 @@ import {
 import theme from '../style/palette.js';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { setDestination, setDateIn, setDateOut, setTransport, setLatitude, setLongitude, setSearchedParkings, setNewSearch } from '../store/App.js';
+import { setDestination, setDateIn, setDateOut, setTransport, setLatitude, setLongitude, setSearchedParkings, setNewSearch, resetSelectedParkingForMap } from '../store/App.js';
 import { load_parkingNearSerchedPosition } from '../services/firebase/persistenceManager.js';
 
 const DestinationForm = () => {
@@ -165,6 +165,7 @@ const DestinationForm = () => {
         } else {
             retriveParkingList();
             dispatch(setNewSearch());
+            dispatch(resetSelectedParkingForMap())
             navigate("/resultList");
         }
     };

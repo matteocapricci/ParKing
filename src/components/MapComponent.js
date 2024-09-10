@@ -21,7 +21,12 @@ const MapComponent = () => {
   const latitude = useSelector(state => state.setDestinationFormField.lat);
   const longitude = useSelector(state => state.setDestinationFormField.lon);
   const parkings = useSelector(state => state.searchedParkings.searchedParkings);
-  const park = useSelector(state => state.selectedParking.selectedParking)
+  const park = useSelector(state => state.selectedParking.selectedParking);
+  const parkSelectedForMap = useSelector(state => state.setSelectedParkingForMap.selectedParkingForMap);
+
+  console.log(parkSelectedForMap);
+
+  console.log(parkSelectedForMap);
 
   let newSearch = useSelector(state => state.newSearch.search)
 
