@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCar, faChevronRight} from '@fortawesome/free-solid-svg-icons';
 import theme from '../style/palette.js';
-import { load_by_doc_id, load_docs } from '../services/firebase/crudOp.js';
+import { load_by_doc_id } from '../services/firebase/crudOp.js';
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedParking, setSelectedParkingForMap, resetSelectedParkingForMap } from '../store/App.js';
+import { setSelectedParking } from '../store/App.js';
 import { Box, Chip, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SimpleSlider from './SimpleSlider.js';
@@ -16,7 +16,6 @@ const ParkingCard = ({ id, name, address, photo_urls, description, services, rat
     const navigate = useNavigate();
     const parking = useSelector(state => state.selectedParking.selectedParking);
     const parkings = useSelector(state => state.searchedParkings.searchedParkings);
-    const parkForMap = useSelector(state => state.setSelectedParkingForMap.selectedParkingForMap);
 
     const cardStyle = {
         border: '1px solid #ddd',
@@ -78,20 +77,8 @@ const ParkingCard = ({ id, name, address, photo_urls, description, services, rat
 
     }
 
-    const handleShowMapInfo = async (event) => {
-
-        if (parkForMap === null){
-            event.preventDefault();
-            let parkSelected = await load_by_doc_id("Parking", id);
-            parkSelected = {...parkSelected, "doc_id": id};
-            dispatch(setSelectedParkingForMap(parkSelected));
-        } else {
-            dispatch(resetSelectedParkingForMap())
-        }
-    }
-
     return (
-        <div style={cardStyle} onClick={handleShowMapInfo}>
+        <div style={cardStyle}>
             <div style={nameStyle}>{name}</div>
             <div style={addressStyle}>{address}</div>
             <div style={ratingStyle}>

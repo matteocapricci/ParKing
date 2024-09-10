@@ -427,18 +427,18 @@ export const load_all_docs = async function (collection_name, postprocessing = (
     }
 }
 
-export const store_by_transaction = async function (obj, collection, error = () => {}, postprocessing = () => {}) {
+export const store_by_transaction = async function (obj, collectionName, error = () => {}, postprocessing = () => {}) {
     try {
         // Eseguire la transazione
         await runTransaction(db, async (transaction) => {
-            const reservationRef = doc(collection(db, collection));
+            const reservationRef = doc(collection(db, collectionName));
 
             // Inserire la nuova prenotazione all'interno della transazione
             transaction.set(reservationRef, obj);
         });
 
     } catch (e) {
-        console.error("Transaction failed: ", e);
+        return false;
     }
     
 }

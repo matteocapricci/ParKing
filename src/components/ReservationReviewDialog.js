@@ -9,6 +9,7 @@ import { auth } from '../services/firebase/confFirebase.js';
 import theme from '../style/palette.js';
 import { error, input } from '../style/styles.js';
 import { store_by_transaction } from '../services/firebase/persistenceManager.js';
+import { setCurrentPage } from '../store/App.js';
 
 const ReservationReviewDialog = ({ open, onClose }) => {
     const [currentUser, setCurrentUser] = useState(auth.currentUser);
@@ -67,6 +68,7 @@ const ReservationReviewDialog = ({ open, onClose }) => {
     const [selectedServices, setSelectedServices] = useState([]);
     const [plate, setPlate] = useState(null);
     const [plateError, setPlateError] = useState('');
+    const [transactionError, setTransactionError] = useState('');
 
     const services = useSelector(state => state.selectedParking.selectedParking.services);
 
@@ -138,9 +140,17 @@ const ReservationReviewDialog = ({ open, onClose }) => {
                     uid: currentUser.uid
                 };
 
-                await store_by_transaction(newReservation, "Reservations")
-
-                navigate("/profile");
+                if (await store_by_transaction(newReservation, "Reservations")) {
+                    dispatch(setCurrentPage("reservation"));
+                    navigate("/profile");
+                } else {
+                    setTransactionError("The selected spot is no longer available!")
+                    setTimeout(() => {
+                        setTransactionError("");
+                        navigate("/resultList")
+                    }, 4000);
+                }
+                
 
             } 
         } else {
@@ -149,10 +159,12 @@ const ReservationReviewDialog = ({ open, onClose }) => {
     };
 
     const handleLoginNavigate = () => {
+        dispatch(setCurrentPage("review"));
         navigate('/login');
     };
 
     const handleSignupNavigate = () => {
+        dispatch(setCurrentPage("review"));
         navigate('/signup');
     };
 
@@ -231,6 +243,7 @@ const ReservationReviewDialog = ({ open, onClose }) => {
                                     <b>Total Cost: </b> <i>{attualCost}€</i>
                                 </label>
                             </div>
+                            {transactionError && <p style={error}>{transactionError}</p>}
                         </div>
                     </DialogContentText>
                 ) : (
