@@ -208,3 +208,7 @@ export const load_parkingNearSerchedPosition = async function(latitude_attribute
 export const load_all_docs = async function (collection_name, postprocessing, error = () => {}, empty = () => {}) {
     return database.load_all_docs(collection_name, postprocessing, error, empty);
 }
+
+export const store_by_transaction = async function (obj, collection, error = () => {}, postprocessing = () => {}) {
+    return database.store_by_transaction(obj, collection, error, postprocessing);
+}
