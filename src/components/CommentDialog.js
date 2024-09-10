@@ -12,7 +12,6 @@ const CommentDialog = ({ open, onClose, onCommentSubmit, reservation }) => {
     const [error, setError] = useState('');
 
     const handleSubmit = () => {
-        console.log(reservation, commentText, rating)
         if (commentText.trim() && rating > 0) {
             onCommentSubmit(reservation, commentText, rating);
             setCommentText('');

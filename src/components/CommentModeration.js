@@ -6,7 +6,7 @@ import DeleteReservationDialog from './DeleteReservationDialog';
 import { resultCommentListStyle } from '../style/styles';
 import CommentCard from '../components/CommentCard'; 
 import CommentDialog from '../components/CommentDialog'; 
-import { load_all_docs, load_docs_by_attributes, delete_doc } from '../services/firebase/persistenceManager.js';
+import { load_all_docs, load_docs_by_attributes, delete_doc, load_docs } from '../services/firebase/persistenceManager.js';
 import { auth } from '../services/firebase/confFirebase.js';
 const CommentModeration = () => {
 
@@ -17,22 +17,31 @@ const CommentModeration = () => {
     const retrieveComments = async () => {
         try {
             const retrievedComments = await load_all_docs("Comment");
-            
-            let newComments = []
-
+            let newComments = [];
+    
             await Promise.all(retrievedComments.map(async (element) => {
                 const user = await load_docs_by_attributes("UserImage", { "uid": element.uid });
                 newComments.push({
                     ...element,
-                    photoURL: user[0].photoURL,
-                    displayName: user[0].displayName
+                    photoURL: user[0]?.photoURL || '', 
+                    displayName: user[0]?.displayName || 'Unknown' 
                 });
+            }));
+    
+            await Promise.all(newComments.map(async (element, index) => {
+                let id = element.parkingId.trim();
+                const park = await load_docs("Parking", id);
+                newComments[index] = {
+                    ...element,
+                    parkingName: park?.name || 'Unknown'
+                };
             }));
             setComments(newComments);
         } catch (error) {
             console.error("Failed to retrieve comments:", error);
         }
     };
+    
 
     const handleDeleteComment = async (comment) => {
         try{
@@ -71,11 +80,14 @@ const CommentModeration = () => {
                             key={index}
                             sx={{ 
                                 marginBottom: '10px', 
-                                backgroundColor: theme.palette.background.default,
+                                backgroundColor: '#f0f0f0',
                                 boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
                                 borderRadius: '8px',
                             }}
                         > 
+                            <Typography variant="h6" align="center" sx={{ color: theme.palette.primary.light, fontWeight: 'bold' }}>
+                                {comment.parkingName}
+                            </Typography>
                             <CommentCard comment={comment} username={comment.displayName} photoUrl={comment.photoURL} />
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
                                 <DeleteButton 

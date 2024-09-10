@@ -10,7 +10,7 @@ const LineChart = ({ data }) => {
                 <ResponsiveLine
                     data={data}
                     margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-                    xScale={{ type: 'point' }} // Use 'point' for categorical x-axis
+                    xScale={{ type: 'point' }}
                     yScale={{
                         type: 'linear',
                         min: 'auto',
@@ -42,7 +42,7 @@ const LineChart = ({ data }) => {
                     }}
                     enableGridX={false}
                     enableGridY={false}
-                    colors={['#FF5733', '#33FF57', '#3357FF']} // Custom colors
+                    colors={['#FF5733', '#33FF57', '#3357FF']}
                     lineWidth={4}
                     enablePoints={false}
                     pointSize={10}

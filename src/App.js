@@ -6,6 +6,9 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import Admin from './pages/Admin';
+import NotFound from './pages/NotFound';
+import ProfileProtectedRoute from './components/ProfileProtectedRoute'
+import  AdminProtectedRoute from './components/AdminProtectedRoute'
 import ShowParkingMapResult from './pages/ShowParkingMapResult';
 import ShowParkingDetail from './pages/ShowParkingDetail'
 import { Provider } from 'react-redux';
@@ -23,9 +26,10 @@ function App() {
             <Route path="/login" element={<Login/>} />
             <Route path="/signup" element={<Signup/>} />
             <Route path="/resultList" element={<ShowParkingMapResult/>} />
-            <Route path="/profile" element={<Profile/>} />
+            <Route path="/profile" element={<ProfileProtectedRoute><Profile/></ProfileProtectedRoute>} />
             <Route path="/parkingDetail" element={<ShowParkingDetail/>} />
-            <Route path="/admin" element={<Admin/>} />
+            <Route path="/admin" element={<AdminProtectedRoute><Admin/></AdminProtectedRoute>} />
+            <Route path="*" element={<NotFound />} /> 
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

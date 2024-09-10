@@ -8,6 +8,7 @@ import ProfileAvatar from '../components/ProfileAvatar';
 import ProfileActions from '../components/ProfileActions';
 import ChangePasswordDialog from '../components/ChangePasswordDialog';
 import CommentModeration from '../components/CommentModeration.js';
+import UserModeration from '../components/UserModeration.js';
 import ChangeImageDialog from '../components/ChangeImageDialog';
 import DashBoard from '../components/Dashboard.js';
 import { Grid } from '@mui/material';
@@ -162,18 +163,7 @@ const Admin = () => {
                         <CommentModeration></CommentModeration>
                     </Grid>
                     <Grid item xs={12} md={7}>
-                        <CustomCard
-                            horizontal={false}
-                            maxWidth="100%"
-                            contentWidth="100%"
-                            img={currentUser?.photoURL || '/default-profile.png'}
-                            children={
-                                <>
-                                    <ProfileAvatar displayName={currentUser?.displayName} photoURL={currentUser?.photoURL} email={currentUser?.email} />
-                                    <ProfileActions onChangeImageClick={handleOpenImgChange} onChangePasswordClick={handleOpenPasswordChange} />
-                                </>
-                            }
-                        />
+                        <UserModeration></UserModeration>
                     </Grid>
 
                 </Grid>

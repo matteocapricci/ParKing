@@ -36,7 +36,7 @@ export const store_doc_by_id = async function (obj, collection_name, id, error= 
  * @param do_not_exist do_not_exist function
  * @returns {Promise<*|undefined>}
  */
-export const load_docs = async function (collection_name, id, postprocessing, error = ()=>{}, do_not_exist = ()=>{}){
+export const load_docs = async function (collection_name, id, postprocessing = ()=>{}, error = ()=>{}, do_not_exist = ()=>{}){
     return database.load_docs(collection_name, id, postprocessing, error, do_not_exist)
 }
 
