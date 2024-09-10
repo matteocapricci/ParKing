@@ -177,7 +177,7 @@ const ReservationReview = () => {
                             }
                             {getUniqueSizes().includes("Truck") ? (
                                 <div 
-                                style={{ ...radioItemStyle, ...(transport === 'truck' ? activeRadioItemStyle : {}) }} 
+                                style={{ ...radioItemStyle, ...(tempTransport === 'truck' ? activeRadioItemStyle : {}) }} 
                                 onClick={() => {
                                     setTempTransport('truck');
                                 }}

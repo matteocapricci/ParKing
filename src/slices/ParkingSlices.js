@@ -14,3 +14,18 @@ export const selectedParkingSlice = createSlice({
         }
     },
 });
+
+export const selectedParkingForMapSlice = createSlice({
+    name: 'selectedParkingForMap',
+    initialState: {
+        selectedParkingForMap: null
+    },
+    reducers: {
+        setSelectedParkingForMap: (state, action) => {
+            state.selectedParkingForMap = action.payload;
+        },
+        resetSelectedParkingForMap: (state, action) => {
+            state.selectedParkingForMap = null;
+        }
+    },
+});

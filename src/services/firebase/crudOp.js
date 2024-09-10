@@ -1,4 +1,4 @@
-import { collection, getDocs, addDoc, setDoc, deleteDoc, updateDoc, doc, getDoc, orderBy, limit, query, where,  getCountFromServer} from "firebase/firestore"
+import { collection, getDocs, addDoc, setDoc, deleteDoc, updateDoc, doc, getDoc, orderBy, limit, query, where,  getCountFromServer, runTransaction} from "firebase/firestore"
 import { firestore } from "./confFirebase";
 
 const db = firestore;
@@ -427,6 +427,18 @@ export const load_all_docs = async function (collection_name, postprocessing = (
     }
 }
 
-export const load_free_parkingSpot_by_parkingId = async function (parking_id, size, error = () => {}, postprocessing = () => {}) {
+export const store_by_transaction = async function (obj, collection, error = () => {}, postprocessing = () => {}) {
+    try {
+        // Eseguire la transazione
+        await runTransaction(db, async (transaction) => {
+            const reservationRef = doc(collection(db, collection));
+
+            // Inserire la nuova prenotazione all'interno della transazione
+            transaction.set(reservationRef, obj);
+        });
+
+    } catch (e) {
+        console.error("Transaction failed: ", e);
+    }
     
 }

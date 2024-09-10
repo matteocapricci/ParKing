@@ -8,11 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth } from '../services/firebase/confFirebase.js';
 import theme from '../style/palette.js';
 import { error, input } from '../style/styles.js';
-import { collection, runTransaction, doc } from "firebase/firestore";
-import { firestore } from '../services/firebase/confFirebase.js';
-import { Check } from '@mui/icons-material';
-
-const db = firestore;
+import { store_by_transaction } from '../services/firebase/persistenceManager.js';
 
 const ReservationReviewDialog = ({ open, onClose }) => {
     const [currentUser, setCurrentUser] = useState(auth.currentUser);
@@ -130,29 +126,22 @@ const ReservationReviewDialog = ({ open, onClose }) => {
             });
 
             if (availableSpot !== null) {
-                try {
-                    await runTransaction(db, async (transaction) => {
-                        const reservationRef = doc(collection(db, "Reservations"));
-                        
-                        const newReservation = {
-                            parkingName: parking.name,
-                            parkingId: parking.doc_id,
-                            parkingSpot: { name: availableSpot.name, size: availableSpot.size },
-                            CheckIn: formatDateTime(dateIn),
-                            CheckOut: formatDateTime(dateOut),
-                            plate: plate,
-                            totalCost: Number(attualCost),
-                            Services: selectedServices,
-                            uid: currentUser.uid
-                        };
-                        transaction.set(reservationRef, newReservation);
-                    });
+                const newReservation = {
+                    parkingName: parking.name,
+                    parkingId: parking.doc_id,
+                    parkingSpot: { name: availableSpot.name, size: availableSpot.size },
+                    CheckIn: formatDateTime(dateIn),
+                    CheckOut: formatDateTime(dateOut),
+                    plate: plate,
+                    totalCost: attualCost,
+                    Services: selectedServices,
+                    uid: currentUser.uid
+                };
 
-                    navigate("/profile");
+                await store_by_transaction(newReservation, "Reservations")
 
-                } catch (e) {
-                    console.error("Transaction failed: ", e);
-                }
+                navigate("/profile");
+
             } 
         } else {
             setPlateError("The plate entered does not comply with the characteristics");
