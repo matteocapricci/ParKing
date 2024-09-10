@@ -53,7 +53,7 @@ export const store_doc_by_id = async function (obj, collection_name, id, error= 
 export const load_docs = async function (collection_name, id, postprocessing, error = ()=>{}, do_not_exist = ()=>{}){
     try{
 
-        if( typeof(id)){
+        if(typeof id === 'function'){
             id = id()
         }
 

@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import CenterLogo from '../components/CenterLogo.js';
@@ -11,12 +12,13 @@ import ChangeImageDialog from '../components/ChangeImageDialog';
 import ReservationList from '../components/ReservationList';
 import { Grid } from '@mui/material';
 import { AuthContext } from '../contexts/authContext/index.jsx';
-import { push_img, pull_img_url, store_doc, get_docs_by_attribute, delete_doc_by_attribute, update_doc, load_docs_by_attributes, delete_doc } from '../services/firebase/persistenceManager.js';
+import { load_docs, push_img, pull_img_url, store_doc, get_docs_by_attribute, delete_doc_by_attribute, update_doc, load_docs_by_attributes, delete_doc } from '../services/firebase/persistenceManager.js';
 import { auth } from '../services/firebase/confFirebase.js';
 
 const Profile = () => {
     const { doSignInWithEmailAndPassword, doPasswordChange, doUpdateProfile } = useContext(AuthContext);
     const [currentUser, setCurrentUser] = useState(auth.currentUser);
+    const {isAdmin} = useContext(AuthContext);
     const [openPassword, setOpenPassword] = useState(false);
     const [openImg, setOpenImg] = useState(false);
     const [oldPassword, setOldPassword] = useState('');
@@ -28,6 +30,7 @@ const Profile = () => {
     const [success, setSuccess] = useState('');
     const [img, setImg] = useState({});
     const [reservations, setReservations] = useState([]);
+    const navigate = useNavigate();
 
    /* 
     const reservations = [
@@ -2660,7 +2663,7 @@ const Profile = () => {
                 try {
                     const retrievedComment = await load_docs_by_attributes("Comment", {
                         uid: currentUser.uid,
-                        parkingId: element.parkingId,
+                        parkingId: element.parkingId.trim(),
                         'parkingSpot.name': element.parkingSpot.name
                     });
                     
@@ -2685,7 +2688,6 @@ const Profile = () => {
             newReservations = await retrieveComments(newReservations);
             await retrieveComments(newReservations);
             setReservations(newReservations);
-            console.log(currentUser)
         }catch (error) {
             console.error("Failed to retrieve reservations:", error);
         }
@@ -2695,7 +2697,13 @@ const Profile = () => {
     
     useEffect(() => {
         retrieveReservations();
-    }, [currentUser]); //inserisci anche reservations quando lo hosti su firebase
+    }, [currentUser]); 
+
+    useEffect(() => {
+        if (isAdmin) {
+            navigate('/admin');
+        }
+    }, [isAdmin, navigate]);
 
     const handleChangePassword = async () => {
         
@@ -2784,7 +2792,6 @@ const Profile = () => {
             
                 
                 console.log("Profile updated successfully.");
-                console.log(currentUser);
                 setSuccess('Image changed correctly!');
                 setTimeout(() => {
                     setSuccess("");
@@ -2805,7 +2812,6 @@ const Profile = () => {
            
             let newReservations = reservations.filter(item => item !== selectedReservation);
             setReservations(newReservations); 
-            console.log(newReservations);
 
         }catch (error) {
             console.error("Failed to delete reservation:", error);
@@ -2813,15 +2819,23 @@ const Profile = () => {
     }
 
     const handleDeleteComment = async (reservation) => {
-        try{
+        try {
             await delete_doc("Comment", reservation.comment[0].doc_id);
+    
+            const commentPark = await load_docs_by_attributes("Comment", { "parkingId": reservation.parkingId.trim() });
+    
+            let newAvgRating = 0;
+            if (commentPark.length > 0) {
+                const totalRating = commentPark.reduce((sum, comment) => sum + comment.rating, 0);
+                newAvgRating = totalRating / commentPark.length;
+            }
+    
+            await update_doc({ avg_rating: newAvgRating }, "Parking", reservation.parkingId.trim());
             retrieveReservations();
-
-        }catch (error) {
+        } catch (error) {
             console.error("Failed to delete comment:", error);
         }
     };
-
     const handleAddComment = async (reservation, text, rating) => {
         let now = new Date();
         now = formatDate(now);
@@ -2831,12 +2845,21 @@ const Profile = () => {
             'text': text,
             'date': now,
             'rating': rating,
-            'parkingId': reservation.parkingId,
+            'parkingId': reservation.parkingId.trim(),
             'parkingSpot': reservation.parkingSpot
         }
 
         try {
             await store_doc(comment, "Comment");
+            const park = await load_docs("Parking", comment.parkingId.trim());
+            const commentPark = await load_docs_by_attributes("Comment", { "parkingId" : comment.parkingId.trim()});
+            
+            if (commentPark.length > 0) {
+                let updatedAvg = (park.avg_rating+comment.rating)/(commentPark.length);
+                await update_doc({ avg_rating: updatedAvg }, "Parking", comment.parkingId.trim());
+            }else{
+                await update_doc({ avg_rating: comment.rating }, "Parking", comment.parkingId.trim());
+            }
             retrieveReservations();
         } catch (error) {
             console.error("Failed to push comment:", error);
