@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
     const [userLoggedIn, setUserLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
-    const [loadingAdmin, setLoadingAdmin] = useState(true);
+    const [loadingAdmin, setLoadingAdmin] = useState(false);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, initializeUser);
@@ -46,11 +46,10 @@ export const AuthProvider = ({ children }) => {
             } else {
                 setIsAdmin(false);
             }
+            setLoadingAdmin(false);
         } catch (error) {
             console.error("Error verifying admin:", error);
             setIsAdmin(false);
-        } finally {
-            setLoadingAdmin(false);
         }
     };
 

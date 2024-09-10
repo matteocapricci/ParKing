@@ -7,7 +7,6 @@ import DestinationForm from "../components/DestinationForm.js";
 import MapComponent from "../components/MapComponent.js";
 import { Box, Grid } from '@mui/material';
 import ParkingCardResultList from "../components/ParkingCardResultList.js";
-import BackButton from "../components/BackButton.js";
 import SortDropdown from "../components/SortDropdown.js";
 import { resultCardListStyle } from '../style/styles';
 

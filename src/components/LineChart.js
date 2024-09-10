@@ -4,11 +4,19 @@ import theme from '../style/palette';
 
 const LineChart = ({ data }) => {
 
+    const processedData = data.map(dataset => ({
+        ...dataset,
+        data: dataset.data.map(point => ({
+            ...point,
+            y: point.y === 0 ? 0 : point.y 
+        }))
+    }));
+
     return (
         <Box m="20px" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <Box sx={{ flex: 1, overflow: 'hidden' }}>
                 <ResponsiveLine
-                    data={data}
+                    data={processedData} 
                     margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
                     xScale={{ type: 'point' }}
                     yScale={{
@@ -36,9 +44,8 @@ const LineChart = ({ data }) => {
                         tickPadding: 5,
                         tickRotation: 0,
                         legend: 'Revenue in euros',
-                        legendOffset: -40,
+                        legendOffset: -50,
                         legendPosition: 'middle',
-                        tickValues: [0, 50, 100, 150, 200, 250, 300]
                     }}
                     enableGridX={false}
                     enableGridY={false}

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs, Tab, Box, Typography, Card, CardContent, CardActions, Button, Paper, Chip, Divider } from '@mui/material';
 import theme from '../style/palette';
-import DeleteButton from '../components/CustomButton.js';
 import DeleteReservationDialog from './DeleteReservationDialog';
 import { resultCardListStyle } from '../style/styles';
 import CommentCard from '../components/CommentCard'; 
 import CommentDialog from '../components/CommentDialog'; 
+import { CircularProgress } from '@mui/material';
+import CustomButton from '../components/CustomButton.js';
 
 const ReservationList = ({ reservations, deleteFunction, deleteCommentFunction, addCommentFunction, currentUser }) => {
     const [tabIndex, setTabIndex] = useState(0);
@@ -15,21 +16,8 @@ const ReservationList = ({ reservations, deleteFunction, deleteCommentFunction, 
     const [openCommentDialog, setOpenCommentDialog] = useState(false);
     const handleOpenDelete = () => setOpenDelete(true);
     const handleCloseDelete = () => setOpenDelete(false);
-    const handleOpenCommentDialog = (reservation) =>( setselectedReservation(reservation), setOpenCommentDialog(true));
-    const handleCloseCommentDialog = () =>( setselectedReservation(null), setOpenCommentDialog(false));
-
-    const dummyComments = [
-        {
-            username: 'John Doe',
-            photoURL: 'https://via.placeholder.com/40',
-            date: '2024-09-01',
-            text: 'reat stay! Very comfortable and clean.G',
-            rating: 4
-        },
-    ];
-
-    //reservations[0] = {...reservations[0], comment: dummyComments};
-
+    const handleOpenCommentDialog = (reservation) => (setselectedReservation(reservation), setOpenCommentDialog(true));
+    const handleCloseCommentDialog = () => (setselectedReservation(null), setOpenCommentDialog(false));
 
     useEffect(() => {
         filterReservations();
@@ -50,9 +38,16 @@ const ReservationList = ({ reservations, deleteFunction, deleteCommentFunction, 
         setFilteredReservations(filtered);
     };
 
+    const isOngoing = (reservation) => {
+        const now = new Date();
+        const checkIn = new Date(reservation.CheckIn);
+        const checkOut = new Date(reservation.CheckOut);
+        return checkIn <= now && now <= checkOut;
+    };
+
     const handleDeleteReservation = (selectedReservation) => { 
         deleteFunction(selectedReservation); 
-        handleCloseDelete()
+        handleCloseDelete();
     };
 
     const handleDeleteComment = async (comment) => {
@@ -63,13 +58,11 @@ const ReservationList = ({ reservations, deleteFunction, deleteCommentFunction, 
         addCommentFunction(reservation, text, rating);
     };
 
-    const propsEliminate = {
-        variant: "text",
-        color: "error",
-        sx: { color: theme.palette.error.main },
-        size: "medium",
-        handleClick: null,
-    }
+    // Separate ongoing and future reservations
+    const sortedReservations = [
+        ...filteredReservations.filter(isOngoing),
+        ...filteredReservations.filter(reservation => !isOngoing(reservation))
+    ];
 
     return (
         <Paper elevation={3} sx={{ padding: '20px', backgroundColor: theme.palette.background.paper, borderRadius: '10px' }}>
@@ -96,12 +89,12 @@ const ReservationList = ({ reservations, deleteFunction, deleteCommentFunction, 
             </Box>
 
             <Box sx={resultCardListStyle}>
-                {filteredReservations.length === 0 ? (
+                {sortedReservations.length === 0 ? (
                     <Typography variant="h6" align="center" sx={{ color: theme.palette.text.secondary }}>
                         No {tabIndex === 0 ? 'future' : 'past'} reservations found.
                     </Typography>
                 ) : (
-                    filteredReservations.map((reservation, index) => (
+                    sortedReservations.map((reservation, index) => (
                         <Card
                             key={index}
                             sx={{ 
@@ -134,35 +127,46 @@ const ReservationList = ({ reservations, deleteFunction, deleteCommentFunction, 
                                             <Chip key={index} label={service.name} color="secondary" variant="outlined" />
                                         ))}
                                     </Box>
-                                    {new Date(reservation.CheckOut) < new Date() ? (
-                                        reservation.comment && reservation.comment.length > 0 ? (
-                                            reservation.comment.map((comment, idx) => (
-                                                <Box key={idx}>
-                                                    <CommentCard comment={comment} username={currentUser.displayName} photoUrl={currentUser.photoURL} />
-                                                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop:'15px' }}>
-                                                        <DeleteButton 
-                                                            name="Delete Comment" 
-                                                            onClick={() => handleDeleteComment(reservation)} 
-                                                        />
+                                    <Box display="flex" justifyContent={isOngoing(reservation) ? 'flex-end' : 'flex-end'} alignItems="center" gap="10px">
+                                        {isOngoing(reservation) && (
+                                            <>
+                                                <CircularProgress size={24} sx={{ color: 'green', animation: 'pulse 1.5s infinite' }} />
+                                                <Typography variant="body1" sx={{ color: 'green', fontWeight: 'bold' }}>On-going</Typography>
+                                            </>
+                                        )}
+                                        {new Date(reservation.CheckOut) < new Date() && !isOngoing(reservation) && (
+                                            reservation.comment && reservation.comment.length > 0 ? (
+                                                reservation.comment.map((comment, idx) => (
+                                                    <Box key={idx}>
+                                                        <CommentCard comment={comment} username={currentUser.displayName} photoUrl={currentUser.photoURL} />
+                                                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '15px' }}>
+                                                            <CustomButton
+                                                                name="Delete Comment" 
+                                                                variant="outlined"
+                                                                onClick={() => handleDeleteComment(reservation)}
+                                                            ></CustomButton>
+                                                        </Box>
                                                     </Box>
-                                                </Box>
-                                            ))
-                                        ) : (
-                                            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                                <DeleteButton 
+                                                ))
+                                            ) : (
+                                                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                        
+                                                <CustomButton
                                                     name="Add Comment" 
                                                     onClick={() => handleOpenCommentDialog(reservation)} 
+                                                    variant="outlined"
                                                 />
-                                            </Box>
-                                        )
-                                    ) : null}
+                                                </Box>
+                                            )
+                                        )}
+                                    </Box>
                                 </Box>
                             </CardContent>
                             <CardActions sx={{ justifyContent: 'flex-end' }}>
-                            {new Date(reservation.CheckOut) >= new Date() && (
-                                    <DeleteButton name="Delete" onClick={() => handleOpenDelete(reservation)} />
+                                {!isOngoing(reservation) && new Date(reservation.CheckOut) >= new Date() && (
+                                    <CustomButton name="Delete" onClick={() => handleOpenDelete(reservation)} variant="outlined" />
                                 )}
-                        </CardActions>
+                            </CardActions>
                             <DeleteReservationDialog
                                 open={openDelete}
                                 onClose={handleCloseDelete}

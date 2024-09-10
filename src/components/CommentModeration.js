@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Tabs, Tab, Box, Typography, Card, CardContent, CardActions, Button, Paper, Chip, Divider } from '@mui/material';
+import { Box, Typography, Card, Paper, Divider } from '@mui/material';
 import theme from '../style/palette';
-import DeleteButton from '../components/CustomButton.js';
-import DeleteReservationDialog from './DeleteReservationDialog';
 import { resultCommentListStyle } from '../style/styles';
 import CommentCard from '../components/CommentCard'; 
-import CommentDialog from '../components/CommentDialog'; 
 import { load_all_docs, load_docs_by_attributes, delete_doc, load_docs } from '../services/firebase/persistenceManager.js';
 import { auth } from '../services/firebase/confFirebase.js';
+import CustomButton from '../components/CustomButton.js';
+
 const CommentModeration = () => {
 
     const [comments, setComments] = useState([]);
@@ -89,10 +88,11 @@ const CommentModeration = () => {
                                 {comment.parkingName}
                             </Typography>
                             <CommentCard comment={comment} username={comment.displayName} photoUrl={comment.photoURL} />
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
-                                <DeleteButton 
+                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>                                    
+                                <CustomButton
                                     name="Delete Comment" 
-                                    onClick={() => handleDeleteComment(comment)} // Pass the individual comment
+                                    onClick={() => handleDeleteComment(comment)}
+                                    variant="outlined"
                                 />
                             </Box>
                         </Card>

@@ -13,8 +13,8 @@ const NotFound = () => {
         alignItems: 'center',
         height: '100vh',
         textAlign: 'center',
-        backgroundColor: '#f8f9fa', // Light gray background
-        color: '#343a40' // Dark gray text
+        backgroundColor: '#f8f9fa',
+        color: '#343a40' 
     };
 
     const headingStyle = {

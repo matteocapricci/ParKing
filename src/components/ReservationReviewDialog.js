@@ -4,34 +4,54 @@ import CustomButton from './CustomButton.js';
 import CustomIconButton from './CustomIconButton.js';
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from 'react-router-dom';  // Importa useNavigate
+import { useNavigate } from 'react-router-dom';
 import { auth } from '../services/firebase/confFirebase.js';
 import theme from '../style/palette.js';
 import { error, input } from '../style/styles.js';
 import { collection, runTransaction, doc } from "firebase/firestore";
 import { firestore } from '../services/firebase/confFirebase.js';
+import { Check } from '@mui/icons-material';
 
 const db = firestore;
 
-
 const ReservationReviewDialog = ({ open, onClose }) => {
-
     const [currentUser, setCurrentUser] = useState(auth.currentUser);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    // State for input field focus and hover
+    const [focused, setFocused] = useState(false);
+    const [hover, setHover] = useState(false);
+
+    const inputStyles = {
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        padding: '8px 12px',
+        fontSize: '16px',
+        width: '100%',
+        maxWidth: '150px',
+        boxSizing: 'border-box',
+        transition: 'border-color 0.3s, box-shadow 0.3s',
+        outline: 'none',
+        margin: '10px 0',
+    };
+
+    const focusedInputStyles = {
+        borderColor: '#3498db',
+        boxShadow: '0 0 5px rgba(52, 152, 219, 0.5)',
+    };
+
+    const hoverInputStyles = {
+        borderColor: '#2980b9',
+    };
+
     function formatDateTime(isoDate) {
-        // Crea un oggetto Date dalla stringa ISO
         const date = new Date(isoDate);
-    
-        // Ottieni i componenti della data e dell'ora
         const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Mesi partono da 0, quindi aggiungi 1
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
-    
-        // Formatta la data come "YYYY-MM-DD HH:mm"
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     }
 
@@ -44,7 +64,6 @@ const ReservationReviewDialog = ({ open, onClose }) => {
 
     const parking = useSelector(state => state.selectedParking.selectedParking);
 
-    console.log(parking);
     const dateIn = useSelector(state => state.setDestinationFormField.dateIn);
     const dateOut = useSelector(state => state.setDestinationFormField.dateOut);
     const transport = useSelector(state => state.setDestinationFormField.transport).toUpperCase();
@@ -74,7 +93,7 @@ const ReservationReviewDialog = ({ open, onClose }) => {
         size: "medium",
         icon: <CloseIcon />,
         handleClick: onClose,
-    }
+    };
 
     const handleServiceClick = (service) => {
         setSelectedServices(prevSelected => {
@@ -99,7 +118,7 @@ const ReservationReviewDialog = ({ open, onClose }) => {
     }
 
     const handleConfirmReservationDialog = async () => {
-        if (isValidLicensePlate(plate)) {
+        if (isValidLicensePlate(plate) && plate !== null) {
             setPlateError('');
 
             let availableSpot = null;
@@ -112,7 +131,6 @@ const ReservationReviewDialog = ({ open, onClose }) => {
 
             if (availableSpot !== null) {
                 try {
-                    // Eseguire la transazione
                     await runTransaction(db, async (transaction) => {
                         const reservationRef = doc(collection(db, "Reservations"));
                         
@@ -123,21 +141,17 @@ const ReservationReviewDialog = ({ open, onClose }) => {
                             CheckIn: formatDateTime(dateIn),
                             CheckOut: formatDateTime(dateOut),
                             plate: plate,
-                            totalCost: attualCost,
+                            totalCost: Number(attualCost),
                             Services: selectedServices,
                             uid: currentUser.uid
                         };
-
-                        // Inserire la nuova prenotazione all'interno della transazione
                         transaction.set(reservationRef, newReservation);
                     });
 
-                    // Naviga verso la pagina del profilo se la transazione è riuscita
                     navigate("/profile");
 
                 } catch (e) {
                     console.error("Transaction failed: ", e);
-                    // Gestisci l'errore come necessario
                 }
             } 
         } else {
@@ -145,13 +159,12 @@ const ReservationReviewDialog = ({ open, onClose }) => {
         }
     };
 
-
     const handleLoginNavigate = () => {
-        navigate('/login');  // Naviga verso la pagina di login
+        navigate('/login');
     };
 
     const handleSignupNavigate = () => {
-        navigate('/signup');  // Naviga verso la pagina di signup
+        navigate('/signup');
     };
 
     return (
@@ -167,88 +180,96 @@ const ReservationReviewDialog = ({ open, onClose }) => {
                 <CustomIconButton {...propsClose} />
             </div>
             <DialogContent>
-            {currentUser !== null ? (
-                <DialogContentText sx={{ textAlign: 'left', marginBottom: '30px' }}>
-                    <div>
-                        <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
-                        <label style={{fontSize: '18px', color: theme.palette.primary.main}}>
-                            <b>Parking Name: </b>{parking.name} <br />
-                            <b>Parking Address: </b>{parking.location.address}
-                        </label>
-                        <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
-                        <label style={{fontSize: '18px', color: theme.palette.primary.main}}>
-                            <b>From: </b> {formatDate(dateIn)} <br />
-                            <b>To: </b> {formatDate(dateOut)}
-                        </label>
-                        <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
-                        <label style={{fontSize: '18px', color: theme.palette.primary.main}}>
-                            <b>Vehicle size selected: </b>{transport} <br />
-                            <b>Please enter your license plate here: </b>
-                        </label>
-                        <input 
-                            type="text" 
-                            id="plate" 
-                            name="plate" 
-                            value={plate} 
-                            onChange={(e) => setPlate(e.target.value)}
-                            required 
-                            style={{ ...input, maxWidth: "150px" }}
-                        />
-                        {plateError && <p style={error}>{plateError}</p>}
-                        <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
-                        <div style={{color: theme.palette.secondary.main, marginBottom: '5px', marginTop: '20px', fontSize: '18px'}}>
-                            <b>Available services to add:</b>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            {services && services.map((service, index) => (
-                                <Chip 
-                                    key={index} 
-                                    label={`${service.name}: ${service.price}€`} 
-                                    color={selectedServices.includes(service) ? "primary" : "secondary"} 
-                                    variant={selectedServices.includes(service) ? "filled" : "outlined"} 
-                                    style={{ 
-                                        marginBottom: '8px', 
-                                        fontSize: '16px',
-                                        padding: '12px 16px'
-                                    }}
-                                    onClick={() => handleServiceClick(service)}
-                                />
-                            ))}
-                        </div>
-                        <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
-                        <div style={{ textAlign: 'right' }}>
-                            <label style={{fontSize: '22px', color: theme.palette.primary.main}}>
-                                <b>Total Cost: </b> <i>{attualCost}€</i>
+                {currentUser !== null ? (
+                    <DialogContentText sx={{ textAlign: 'left', marginBottom: '30px' }}>
+                        <div>
+                            <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
+                            <label style={{fontSize: '18px', color: theme.palette.primary.main}}>
+                                <b>Parking Name: </b>{parking.name} <br />
+                                <b>Parking Address: </b>{parking.location.address}
                             </label>
+                            <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
+                            <label style={{fontSize: '18px', color: theme.palette.primary.main}}>
+                                <b>From: </b> {formatDate(dateIn)} <br />
+                                <b>To: </b> {formatDate(dateOut)}
+                            </label>
+                            <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
+                            <label style={{fontSize: '18px', color: theme.palette.primary.main}}>
+                                <b>Vehicle size selected: </b>{transport} <br />
+                                <b>Please enter your license plate here: </b>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="plate" 
+                                name="plate" 
+                                value={plate} 
+                                onChange={(e) => setPlate(e.target.value)}
+                                required 
+                                style={{
+                                    ...inputStyles,
+                                    ...(focused ? focusedInputStyles : {}),
+                                    ...(hover ? hoverInputStyles : {}),
+                                }}
+                                onFocus={() => setFocused(true)}
+                                onBlur={() => setFocused(false)}
+                                onMouseOver={() => setHover(true)}
+                                onMouseOut={() => setHover(false)}
+                            />
+                            {plateError && <p style={error}>{plateError}</p>}
+                            <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
+                            <div style={{color: theme.palette.secondary.main, marginBottom: '5px', marginTop: '20px', fontSize: '18px'}}>
+                                <b>Available services to add:</b>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                {services && services.map((service, index) => (
+                                    <Chip 
+                                        key={index} 
+                                        label={`${service.name}: ${service.price}€`} 
+                                        color={selectedServices.includes(service) ? "primary" : "secondary"} 
+                                        variant={selectedServices.includes(service) ? "filled" : "outlined"} 
+                                        style={{ 
+                                            marginBottom: '8px', 
+                                            fontSize: '16px',
+                                            padding: '12px 16px'
+                                        }}
+                                        onClick={() => handleServiceClick(service)}
+                                    />
+                                ))}
+                            </div>
+                            <Divider sx={{ marginY: '10px', borderColor: theme.palette.primary.main, borderWidth: '1.5px' }} />
+                            <div style={{ textAlign: 'right' }}>
+                                <label style={{fontSize: '22px', color: theme.palette.primary.main}}>
+                                    <b>Total Cost: </b> <i>{attualCost}€</i>
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                </DialogContentText>
-            ) : (
-                <DialogContentText sx={{ textAlign: 'center', marginBottom: '30px' }}>
-                     <div>
-                        <label style={{fontSize: '18px', color: theme.palette.primary.main}}>
-                            <b>To make a reservation you must</b><br/>
-                        </label>
-                        <CustomButton name="log-in" onClick={handleLoginNavigate}></CustomButton><br/>
-                        <label style={{fontSize: '18px', color: theme.palette.primary.main}}>
-                            <b>or</b><br/>
-                        </label>
-                        <CustomButton name="create an account" onClick={handleSignupNavigate}></CustomButton>
-                    </div>
-                </DialogContentText>
-            )
-            }
+                    </DialogContentText>
+                ) : (
+                    <DialogContentText sx={{ textAlign: 'center', marginBottom: '30px' }}>
+                        <div>
+                            <label style={{fontSize: '18px', color: theme.palette.primary.main}}>
+                                <b>To make a reservation you must</b><br/>
+                            </label>
+                            <CustomButton name="log-in" onClick={handleLoginNavigate} />
+                            <br/>
+                            <label style={{fontSize: '18px', color: theme.palette.primary.main}}>
+                                <b>or</b><br/>
+                            </label>
+                            <CustomButton name="create an account" onClick={handleSignupNavigate} />
+                        </div>
+                    </DialogContentText>
+                )}
             </DialogContent>
-            {currentUser !== null ? (
+            {currentUser !== null && (
                 <DialogActions>
-                <CustomButton 
-                    name='Confirm' 
-                    size='large'
-                    variant='contained'
-                    onClick={handleConfirmReservationDialog}
-                />
-            </DialogActions>
-            ): ("")}
+                    <CustomButton 
+                        name='Confirm' 
+                        size='large'
+                        variant='contained'
+                        onClick={handleConfirmReservationDialog}
+                    />
+                </DialogActions>
+            )}
         </Dialog>
     );
 }

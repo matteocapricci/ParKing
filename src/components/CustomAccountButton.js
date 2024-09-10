@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from '../contexts/authContext/index.jsx';
 import theme from "../style/palette";
-import { BorderColor } from '@mui/icons-material';
 
 function CustomAccountButton({ src }) {
     const [anchorEl, setAnchorEl] = useState(null);

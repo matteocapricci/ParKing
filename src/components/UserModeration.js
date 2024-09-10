@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Avatar, Button, Divider } from '@mui/material';
-import DeleteButton from '../components/CustomButton';
 import { load_all_docs, update_doc, delete_doc } from '../services/firebase/persistenceManager';
 import theme from '../style/palette';
 import { resultCommentListStyle } from '../style/styles';
+import CustomButton from '../components/CustomButton';
 
 const UserModeration = () => {
     const [users, setUsers] = useState([]);
@@ -84,10 +84,11 @@ const UserModeration = () => {
                                 <Typography variant="body1" fontWeight="bold">{user.displayName || 'Unknown User'}</Typography>
                             </Box>
 
-                            <Box sx={{ display: 'flex', gap: '10px' }}>
-                                <DeleteButton
+                            <Box sx={{ display: 'flex', gap: '10px' }}>                                 
+                                <CustomButton 
                                     name="Delete Account"
                                     onClick={() => handleDeleteUser(user.id)}
+                                    variant="outlined"
                                 />
                                 {user.enable ? (
                                     <Button

@@ -3,9 +3,9 @@ import { Box, Typography, Grid } from "@mui/material";
 import LineChart from "../components/LineChart";
 import PieChart from "../components/PieChart";
 import GeographyChart from "../components/GeographyChart";
-import { mockLineData } from "../data/mockData";
 import theme from '../style/palette';
 import { load_all_docs } from '../services/firebase/persistenceManager'
+import LoadingSpinner from './LoadingSpinner';
 
 const DashBoard = () => {
 
@@ -15,6 +15,7 @@ const DashBoard = () => {
     const [totalRevenue, setTotalRevenue] = useState(0);
     const [monthlyRevenue, setMonthlyRevenue] = useState([]);
     const [geoData, setGeoData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const allStates = [
         "AFG", "AGO", "ALB", "ARE", "ARG", "ARM", "ATA", "ATF", "AUT", "AZE",
@@ -55,16 +56,18 @@ const DashBoard = () => {
         };
 
         return Object.keys(sizeCounts).map(size => ({
-            id: size,
-            label: size,
+            id: size+"(%)",
+            label: size+"(%)",
             value: totalReservations ? Math.round((sizeCounts[size] / totalReservations) * 100) : 0,
             color: colors[size]
         }));
     };
 
     const calculateTotalRevenue = () => {
-        return reservations.reduce((total, reservation) => total + reservation.totalCost, 0);
+        const totalRevenue = reservations.reduce((total, reservation) => total + Number(reservation.totalCost), 0);
+        return totalRevenue.toFixed(2); 
     };
+    
     
     const computeMonthlyRevenue = () => {
         const monthlyRevenue = {};
@@ -111,8 +114,6 @@ const DashBoard = () => {
         allStates.forEach(state => {
             stateCounts[state] = 0;
         });
-
-        console.log(allStates.length)
     
         parkings.forEach(parking => {
             const state = parking.location.state;
@@ -132,6 +133,7 @@ const DashBoard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true); 
                 const reservationsData = await load_all_docs("Reservations");
                 setReservations(reservationsData);
     
@@ -139,6 +141,8 @@ const DashBoard = () => {
                 setParkings(parkingsData);
             } catch (error) {
                 console.error("Error fetching data: ", error);
+            } finally {
+                setLoading(false); 
             }
         };
     
@@ -154,13 +158,19 @@ const DashBoard = () => {
     }, [reservations]);
     
     useEffect(() => {
-        console.log(parkings.length)
         if (parkings.length > 0) {
             let formattedParks = computeParkingsByState();
             setGeoData(formattedParks);
         }
     }, [parkings]);
 
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <LoadingSpinner/>
+            </Box>
+        );
+    }
 
     return (
         <Grid container spacing={2} sx={{ padding: '10px', backgroundColor: theme.palette.info.light, height: '100%' }}>
@@ -183,7 +193,15 @@ const DashBoard = () => {
                         color={theme.palette.secondary.main}
                         gutterBottom
                     >
-                        SIZE USAGE (%)
+                        RESERVATIONS
+                    </Typography>
+                    <Typography
+                        variant="h3"
+                        fontWeight="bold"
+                        color={theme.palette.primary.main}
+                        gutterBottom
+                    >
+                        {reservations.length}
                     </Typography>
                     <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Box sx={{ height: '250px', width: '100%' }}>
@@ -219,7 +237,7 @@ const DashBoard = () => {
                         color={theme.palette.primary.main}
                         gutterBottom
                     >
-                        €{totalRevenue}
+                        € {totalRevenue}
                     </Typography>
                     <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Box sx={{ height: '250px', width: '100%' }}>

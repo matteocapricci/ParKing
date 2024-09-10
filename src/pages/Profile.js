@@ -2827,7 +2827,7 @@ const Profile = () => {
             let newAvgRating = 0;
             if (commentPark.length > 0) {
                 const totalRating = commentPark.reduce((sum, comment) => sum + comment.rating, 0);
-                newAvgRating = totalRating / commentPark.length;
+                newAvgRating = totalRating / (commentPark.length + 1);
             }
     
             await update_doc({ avg_rating: newAvgRating }, "Parking", reservation.parkingId.trim());
@@ -2855,7 +2855,7 @@ const Profile = () => {
             const commentPark = await load_docs_by_attributes("Comment", { "parkingId" : comment.parkingId.trim()});
             
             if (commentPark.length > 0) {
-                let updatedAvg = (park.avg_rating+comment.rating)/(commentPark.length);
+                let updatedAvg = (park.avg_rating+comment.rating)/(commentPark.length + 1);
                 await update_doc({ avg_rating: updatedAvg }, "Parking", comment.parkingId.trim());
             }else{
                 await update_doc({ avg_rating: comment.rating }, "Parking", comment.parkingId.trim());

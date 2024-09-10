@@ -16,7 +16,7 @@ function CustomButton({ name, size, variant, onClick }) {
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={onClick} // Directly use onClick here
+      onClick={onClick}
     >
       {name}
     </Button>

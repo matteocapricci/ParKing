@@ -10,7 +10,7 @@ const AdminProtectedRoute = ({ children }) => {
         return <LoadingSpinner></LoadingSpinner>; 
     }
 
-    return isAdmin ? children : <Navigate to="/profile" />;
+    return isAdmin ? children : <Navigate to="/login" />;
 };
 
 export default AdminProtectedRoute;
