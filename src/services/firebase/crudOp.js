@@ -290,7 +290,7 @@ export const load_docs_by_attributes = async function (collection_name, attribut
     }
 }
 
-export const load_parkingNearSerchedPosition = async function ( latitude_attribute, longitude_attribute, order_by, error = () => {}, postprocessing = () => {} ) {
+export const load_parkingNearSerchedPosition = async function ( latitude_attribute, longitude_attribute, size_attribute, checkIn_attribute, checkOut_attribute, order_by, error = () => {}, postprocessing = () => {} ) {
     try {
         const deltaPosition = {
             "latMax": latitude_attribute + DELTAKM,
@@ -298,6 +298,8 @@ export const load_parkingNearSerchedPosition = async function ( latitude_attribu
             "lonMax": longitude_attribute + DELTAKM,
             "lonMin": longitude_attribute - DELTAKM
         }
+        
+        let capitalizedSizeAttribute = size_attribute.charAt(0).toUpperCase() + size_attribute.slice(1);
         
         let col = collection(db, 'Parking'); 
         let q = query(col);
@@ -317,14 +319,86 @@ export const load_parkingNearSerchedPosition = async function ( latitude_attribu
 
         let result = [];
         snapshot.forEach((snap_item) => {
-            result.push({
-                ...snap_item.data(),
-                doc_id: snap_item.id
-            });
+            let found = false;
+            if (size_attribute !== "any"){
+                snap_item.data().parkingSlots.forEach((parkingSlot) => {
+                    if(parkingSlot.size === capitalizedSizeAttribute && !found) {
+                        result.push({
+                            ...snap_item.data(),
+                            doc_id: snap_item.id
+                        });
+                        found = true;
+                    }
+                })
+            } else {
+                result.push({
+                    ...snap_item.data(),
+                    doc_id: snap_item.id
+                });
+            }
         });
-        
-        postprocessing(result);
-        return result;
+
+        let availableParking = [];
+
+        for (let res of result) {
+            for (let parkSlot of res.parkingSlots) {
+                console.log(res.doc_id);
+                console.log(parkSlot.name);
+                let linkedReservations = await load_docs_by_attributes("Reservations", {"parkingId": res.doc_id, "parkingSpot.name": parkSlot.name});
+
+                console.log(linkedReservations);
+                
+                if (linkedReservations.length > 0) {
+                    let isAvailable = true;
+                    
+                    for (let linkedReservation of linkedReservations) {
+                        let checkIn = new Date(linkedReservation.CheckIn);
+                        let checkOut = new Date(linkedReservation.CheckOut);
+                        let checkIn_attr = new Date(checkIn_attribute);
+                        let checkOut_attr = new Date(checkOut_attribute);
+
+                        if ((checkIn_attr >= checkIn && checkIn_attr <= checkOut) || (checkOut_attr >= checkIn && checkOut_attr <= checkOut)) {
+                            isAvailable = false;
+                            break;
+                        }
+                    }
+
+                    if (isAvailable && parkSlot.size === capitalizedSizeAttribute ) {
+                        parkSlot.isAvailable = true;
+                        availableParking.push({ ...res, parkingSlots: [parkSlot] });
+                    }
+                } else {
+                    if (capitalizedSizeAttribute !== "Any") {
+                        if (parkSlot.size === capitalizedSizeAttribute ) {
+                            parkSlot.isAvailable = true;
+                            availableParking.push({ ...res, parkingSlots: [parkSlot] });
+                        }
+                    } else {
+                        parkSlot.isAvailable = true;
+                        availableParking.push({ ...res, parkingSlots: [parkSlot] });
+                    }
+                }
+            }
+        }
+
+        let uniqueAvailableParking = availableParking.reduce((acc, current) => {
+            let found = acc.find(item => item.doc_id === current.doc_id);
+            
+            if (found) {
+                found.parkingSlots = [
+                    ...found.parkingSlots,
+                    ...current.parkingSlots.filter(slot => slot.isAvailable && !found.parkingSlots.some(existingSlot => existingSlot.name === slot.name))
+                ];
+            } else {
+                acc.push(current);
+            }
+
+            return acc;
+        }, []);
+
+        postprocessing(uniqueAvailableParking);
+        return uniqueAvailableParking;
+
     } catch (e) {
         console.log(e);
         error();
@@ -353,3 +427,6 @@ export const load_all_docs = async function (collection_name, postprocessing = (
     }
 }
 
+export const load_free_parkingSpot_by_parkingId = async function (parking_id, size, error = () => {}, postprocessing = () => {}) {
+    
+}

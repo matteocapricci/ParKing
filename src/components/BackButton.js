@@ -9,7 +9,7 @@ const BackButton = () => {
 
   return (
     <button 
-      onClick={() => navigate(-1)} 
+      onClick={() => navigate("/resultList")} 
       style={{
         display: 'flex',
         alignItems: 'center',

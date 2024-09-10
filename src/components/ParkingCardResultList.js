@@ -8,7 +8,7 @@ function ParkingCardResultList() {
     const dispatch = useDispatch()
 
     const parkings = useSelector(state => state.searchedParkings.searchedParkings);
-    dispatch(resetSelectedParking())
+    dispatch(resetSelectedParking());
 
     return (
         <div>

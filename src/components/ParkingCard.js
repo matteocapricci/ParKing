@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCar } from '@fortawesome/free-solid-svg-icons';
+import { faCar, faChevronRight} from '@fortawesome/free-solid-svg-icons';
 import theme from '../style/palette.js';
 import { load_by_doc_id, load_docs } from '../services/firebase/crudOp.js';
 import { useDispatch, useSelector } from "react-redux";
@@ -8,14 +8,14 @@ import { setSelectedParking } from '../store/App.js';
 import { Box, Chip, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SimpleSlider from './SimpleSlider.js';
-import { alignProperty } from '@mui/material/styles/cssUtils.js';
-import { BorderLeft } from '@mui/icons-material';
+import CustomButton from './CustomButton.js';
 
 const ParkingCard = ({ id, name, address, photo_urls, description, services, rating, price }) => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const parking = useSelector(state => state.selectedParking.selectedParking)
+    const parking = useSelector(state => state.selectedParking.selectedParking);
+    const parkings = useSelector(state => state.searchedParkings.searchedParkings);
 
     const cardStyle = {
         border: '1px solid #ddd',
@@ -65,6 +65,12 @@ const ParkingCard = ({ id, name, address, photo_urls, description, services, rat
         if (parking === null){
             event.preventDefault();
             let park = await load_by_doc_id("Parking", id);
+            parkings.forEach(parking => {
+                if (id === parking.doc_id) {
+                    park.parkingSlots = parking.parkingSlots;
+                }
+            });
+            park = {...park, "doc_id": id};
             dispatch(setSelectedParking(park));
             navigate('/parkingDetail')
         }
@@ -72,7 +78,7 @@ const ParkingCard = ({ id, name, address, photo_urls, description, services, rat
     }
 
     return (
-        <div style={cardStyle} onClick={handleClick}>
+        <div style={cardStyle}>
             <div style={nameStyle}>{name}</div>
             <div style={addressStyle}>{address}</div>
             <div style={ratingStyle}>
@@ -96,6 +102,20 @@ const ParkingCard = ({ id, name, address, photo_urls, description, services, rat
                    <Chip key={index} label={service.name + ": " + service.price + "€"} color="secondary" variant="outlined" />
                 ))}
             </Box>}
+            {parking === null ? (
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <CustomButton
+                    name={<>
+                        View details<FontAwesomeIcon icon={faChevronRight} style={{ marginLeft: '8px' }} />
+                      </>}
+                    onClick={handleClick}
+                >
+                </CustomButton>
+            </div>
+            ):(
+                ''
+            )}
+            
         </div>
     );
 };

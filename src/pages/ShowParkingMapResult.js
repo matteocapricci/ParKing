@@ -20,7 +20,6 @@ function ShowParkingMapResult(){
             <Grid container spacing={4} alignItems="flex-start" justifyContent="center" sx={{ marginTop: '15px' }}>
                     <Grid item md={2} style={{ padding: 0 }}>
                         <div style={{display: 'flex'}}>
-                            <BackButton />
                             <SortDropdown />
                         </div>
                         <Box sx={{...resultCardListStyle, marginRight: '15px'}}>
