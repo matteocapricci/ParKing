@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCar, faChevronRight} from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight} from '@fortawesome/free-solid-svg-icons';
 import theme from '../style/palette.js';
 import { load_by_doc_id } from '../services/firebase/crudOp.js';
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,7 @@ import { Box, Chip, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SimpleSlider from './SimpleSlider.js';
 import CustomButton from './CustomButton.js';
+import CarRating from './CarRating.js';
 
 const ParkingCard = ({ id, name, address, photo_urls, description, services, rating, price }) => {
 
@@ -37,18 +38,6 @@ const ParkingCard = ({ id, name, address, photo_urls, description, services, rat
     const addressStyle = {
         color: theme.palette.primary.light,
         marginBottom: '10px',
-    };
-
-    const ratingStyle = {
-        display: 'flex',
-        alignItems: 'center',
-        marginBottom: '10px',
-        color: theme.palette.primary.light
-    };
-
-    const carValueStyle = {
-        color: theme.palette.secondary.dark,
-        marginRight: '5px'
     };
 
     const priceStyle = {
@@ -81,12 +70,7 @@ const ParkingCard = ({ id, name, address, photo_urls, description, services, rat
         <div style={cardStyle}>
             <div style={nameStyle}>{name}</div>
             <div style={addressStyle}>{address}</div>
-            <div style={ratingStyle}>
-                {[...Array(Math.floor(rating))].map((_, i) => (
-                    <FontAwesomeIcon icon={faCar} style={carValueStyle} key={i} />
-                ))}
-                {rating.toFixed(1)}
-            </div>
+            <CarRating rating={rating} />
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 {photo_urls && <SimpleSlider images={parking.photo_urls}/>}
             </div>

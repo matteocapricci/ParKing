@@ -15,10 +15,9 @@ import {
 } from '../style/styles.js';
 import CenterLogo from '../components/CenterLogo.js';
 import PageContainer from '../components/PageContainer.js';
-import { AuthContext } from '../contexts/authContext/index.jsx';
+import useAuth from '../hooks/useAuth';
 import { useNavigate } from "react-router-dom";
-import{ createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../services/firebase/confFirebase.js";
+
 
 const Signup = () => {
   
@@ -38,7 +37,7 @@ const Signup = () => {
   const [passwordError, setPasswordError] = useState('');
 
   const navigate = useNavigate();
-  const { doCreateUserWithEmailAndPassword } = useContext(AuthContext);
+  const { doCreateUserWithEmailAndPassword } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
