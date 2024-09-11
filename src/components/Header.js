@@ -5,7 +5,7 @@ import {useNavigate, useLocation} from "react-router-dom";
 import { useEffect } from "react";
 import { headerStyle, buttonGroupStyle} from '../style/styles.js';
 import { useContext } from "react";
-import { AuthContext } from '../contexts/authContext/index.jsx';
+import useAuth from '../hooks/useAuth';
 import CustomAccountButton from "./CustomAccountButton.js";
 import theme from "../style/palette.js";
 
@@ -20,7 +20,7 @@ const logoStyle = {
 function Header({page}) {
 
     const navigate = useNavigate();
-    const {currentUser, userLoggedIn, doSignOut} = useContext(AuthContext);
+    const {currentUser, userLoggedIn, doSignOut} = useAuth();
     const location = useLocation();
 
     const handleClickHome = {

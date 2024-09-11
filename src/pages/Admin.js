@@ -9,14 +9,13 @@ import UserModeration from '../components/UserModeration.js';
 import ChangeImageDialog from '../components/ChangeImageDialog';
 import DashBoard from '../components/Dashboard.js';
 import { Grid } from '@mui/material';
-import { AuthContext } from '../contexts/authContext/index.jsx';
-import { auth } from '../services/firebase/confFirebase.js';
+import useAuth from '../hooks/useAuth';
 import { push_img, pull_img_url, store_doc, get_docs_by_attribute, delete_doc_by_attribute, update_doc, load_docs_by_attributes, delete_doc } from '../services/firebase/persistenceManager.js';
 
 
 const Admin = () => {
-    const { doSignInWithEmailAndPassword, doPasswordChange, doUpdateProfile } = useContext(AuthContext);
-    const [currentUser, setCurrentUser] = useState(auth.currentUser);
+    const { currentUser: masterCurrentUser, isAdmin, doSignInWithEmailAndPassword, doPasswordChange, doUpdateProfile } = useAuth();
+    const [currentUser, setCurrentUser] = useState(masterCurrentUser);
     const [openPassword, setOpenPassword] = useState(false);
     const [openImg, setOpenImg] = useState(false);
     const [oldPassword, setOldPassword] = useState('');

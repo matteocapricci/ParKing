@@ -10,6 +10,10 @@ import ReservationReview from "../components/ReservationReview.js";
 import { get_docs_by_attribute, load_docs_by_attributes, load_docs } from '../services/firebase/crudOp.js';
 import theme from '../style/palette.js';
 import CommentCard from '../components/CommentCard.js';
+import { resultCommentListStyle } from '../style/styles';
+import CustomButton from '../components/CustomButton.js';
+import { Box, Typography, Card, Paper, Divider } from '@mui/material';
+
 
 function ShowParkingDetail(){
 
@@ -66,23 +70,37 @@ function ShowParkingDetail(){
                 <Grid item md={2} >
                     <ReservationReview />
                 </Grid>
+                <Grid item md={5} >
+                    <Paper elevation={3} sx={{ padding: '10px', backgroundColor: theme.palette.background.paper, borderRadius: '10px'}}>
+                        <Typography
+                            variant="h5"
+                            fontWeight="bold"
+                            color={theme.palette.secondary.main}
+                            gutterBottom
+                            sx={{ textAlign: 'center' }} 
+                        >
+                            Feedbacks
+                        </Typography>
+                        <Divider sx={{ marginBottom: '10px' }} />
+                        <Box sx={resultCommentListStyle}>
+                            {parkComments.length === 0 ? (
+                                <Typography variant="h6" align="center" sx={{ color: theme.palette.text.secondary }}>
+                                    No comments found.
+                                </Typography>
+                            ) : (
+                                parkComments.map((comment, index) => (
+                                <Box key={index} sx={{ marginBottom: '20px' }}>
+                                    <CommentCard 
+                                        comment={comment} 
+                                        username={comment.displayName} 
+                                        photoUrl={comment.photoURL} 
+                                    />
+                                </Box>))
+                            )}
+                        </Box>
+                    </Paper>
+                </Grid>
             </Grid>
-            <div>
-            <h1 style={{fontSize: '25px', color: theme.palette.secondary.main, marginLeft: '50px', marginTop: '30px'}}>Comments: </h1>
-            {parkComments.length > 0 ? (
-                parkComments.map((comment, index) => (
-                    <CommentCard 
-                        comment={comment} 
-                        username={comment.displayName}
-                        photoUrl={comment.photoURL} 
-                    />
-                ))
-            ) : (
-                <h1 style={{fontSize: '20px', color: theme.palette.primary.main, marginLeft: '50px', marginTop: '20px'}}>
-                    There are no comments for this parking
-                </h1>
-            )}
-            </div>
             <Footer />
         </div>
         

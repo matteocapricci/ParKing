@@ -11,16 +11,14 @@ import ChangePasswordDialog from '../components/ChangePasswordDialog';
 import ChangeImageDialog from '../components/ChangeImageDialog';
 import ReservationList from '../components/ReservationList';
 import { Grid } from '@mui/material';
-import { AuthContext } from '../contexts/authContext/index.jsx';
 import { load_docs, push_img, pull_img_url, store_doc, get_docs_by_attribute, delete_doc_by_attribute, update_doc, load_docs_by_attributes, delete_doc } from '../services/firebase/persistenceManager.js';
-import { auth } from '../services/firebase/confFirebase.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetCurrentPage, setCurrentPage } from '../store/App.js';
+import { resetCurrentPage } from '../store/App.js';
+import useAuth from '../hooks/useAuth';
 
 const Profile = () => {
-    const { doSignInWithEmailAndPassword, doPasswordChange, doUpdateProfile } = useContext(AuthContext);
-    const [currentUser, setCurrentUser] = useState(auth.currentUser);
-    const {isAdmin} = useContext(AuthContext);
+    const { currentUser: masterCurrentUser, isAdmin, doSignInWithEmailAndPassword, doPasswordChange, doUpdateProfile } = useAuth();
+    const [currentUser, setCurrentUser] = useState(masterCurrentUser);
     const [openPassword, setOpenPassword] = useState(false);
     const [openImg, setOpenImg] = useState(false);
     const [oldPassword, setOldPassword] = useState('');
@@ -71,7 +69,6 @@ const Profile = () => {
         try {
             let updatedReservations = [];
             
-            // Create an array of promises for parallel execution
             const promises = reservations.map(async (element) => {
                 try {
                     const retrievedComment = await load_docs_by_attributes("Comment", {
@@ -240,7 +237,7 @@ const Profile = () => {
             let newAvgRating = 0;
             if (commentPark.length > 0) {
                 const totalRating = commentPark.reduce((sum, comment) => sum + comment.rating, 0);
-                newAvgRating = totalRating / (commentPark.length + 1);
+                newAvgRating = totalRating / (commentPark.length);
             }
     
             await update_doc({ avg_rating: newAvgRating }, "Parking", reservation.parkingId.trim());
@@ -268,7 +265,7 @@ const Profile = () => {
             const commentPark = await load_docs_by_attributes("Comment", { "parkingId" : comment.parkingId.trim()});
             
             if (commentPark.length > 0) {
-                let updatedAvg = (park.avg_rating+comment.rating)/(commentPark.length + 1);
+                let updatedAvg = (park.avg_rating+comment.rating)/(commentPark.length);
                 await update_doc({ avg_rating: updatedAvg }, "Parking", comment.parkingId.trim());
             }else{
                 await update_doc({ avg_rating: comment.rating }, "Parking", comment.parkingId.trim());

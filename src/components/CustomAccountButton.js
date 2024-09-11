@@ -8,15 +8,14 @@ import IconButton from '@mui/material/IconButton';
 import Logout from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
-import { AuthContext } from '../contexts/authContext/index.jsx';
+import useAuth from '../hooks/useAuth';
 import theme from "../style/palette";
 
 function CustomAccountButton({ src }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
-    const { currentUser } = useContext(AuthContext);
-    const { doSignOut } = useContext(AuthContext);
+    const { currentUser, doSignOut } = useAuth();
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);

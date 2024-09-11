@@ -16,6 +16,15 @@ const carValueStyle = {
 };
 
 const CarRating = ({ rating }) => {
+    if (rating === 0) {
+        return (
+            <div style={ratingStyle}>
+                <FontAwesomeIcon icon={faCar} style={{ ...carValueStyle, opacity: 0.2 }} />
+                <span>No reviews yet</span>
+            </div>
+        );
+    }
+
     const fullCars = Math.floor(rating);
     const halfCar = rating % 1 >= 0.5;
     const emptyCars = 5 - fullCars - (halfCar ? 1 : 0);
@@ -31,7 +40,7 @@ const CarRating = ({ rating }) => {
             {[...Array(emptyCars)].map((_, index) => (
                 <FontAwesomeIcon icon={faCar} style={{ ...carValueStyle, opacity: 0.2 }} key={`empty-${index}`} />
             ))}
-            {rating.toFixed(1)}
+            <span>{rating.toFixed(1)}</span>
         </div>
     );
 };

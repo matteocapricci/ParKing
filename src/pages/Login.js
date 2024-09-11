@@ -15,7 +15,7 @@ import {
 } from '../style/styles.js';
 import CenterLogo from '../components/CenterLogo.js';
 import PageContainer from '../components/PageContainer.js';
-import { AuthContext } from '../contexts/authContext/index.jsx';
+import useAuth from '../hooks/useAuth';
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -26,7 +26,7 @@ const Login = () => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
   const navigate = useNavigate();
-  const { doSignInWithEmailAndPassword, doSignInWithGoogle } = useContext(AuthContext);
+  const { doSignInWithEmailAndPassword, doSignInWithGoogle } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
