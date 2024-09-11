@@ -3,6 +3,8 @@ import { auth } from "../../services/firebase/confFirebase.js";
 import { onAuthStateChanged } from "firebase/auth";
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, updatePassword, updateProfile } from "firebase/auth";
 import { store_doc, update_doc, get_docs_by_attribute } from "../../services/firebase/persistenceManager";
+import { resetCurrentPage } from "../../store/App.js"
+import { useDispatch, useSelector } from "react-redux";
 
 export const AuthContext = createContext();
 
@@ -12,6 +14,9 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
     const [loadingAdmin, setLoadingAdmin] = useState(false);
+
+    const dispatch = useDispatch();
+    const page = useSelector(state => state.setCurrentPage.currentPage);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, initializeUser);
@@ -70,7 +75,14 @@ export const AuthProvider = ({ children }) => {
             };
 
             await store_doc(userImage, "UserImage");
-            navigate("/profile");
+
+            if (page === "review") {
+                dispatch(resetCurrentPage());
+                navigate("/parkingDetail")
+            } else {
+                navigate("/profile")
+            }
+            
             return true;
         } catch (error) {
             console.error("Error creating user:", error);
@@ -85,8 +97,15 @@ export const AuthProvider = ({ children }) => {
             setUserLoggedIn(true);
             await verifyAdmin(userCredential.user.email);
 
+            console.log(page);
+
             if (navigate) {
-                navigate("/profile");
+                if (page === "review") {
+                    dispatch(resetCurrentPage());
+                    navigate("/parkingDetail")
+                } else {
+                    navigate("/profile")
+                }
             }
             return true;
         } catch (error) {
@@ -135,7 +154,12 @@ export const AuthProvider = ({ children }) => {
             }
 
             await verifyAdmin(user.email);
-            navigate("/profile");
+            if (page === "review") {
+                dispatch(resetCurrentPage());
+                navigate("/parkingDetail")
+            } else {
+                navigate("/profile")
+            }
             return true;
         } catch (error) {
             console.error('Error during sign-in or document update:', error);
