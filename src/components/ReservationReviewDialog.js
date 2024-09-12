@@ -116,7 +116,7 @@ const ReservationReviewDialog = ({ open, onClose }) => {
     }
 
     const handleConfirmReservationDialog = async () => {
-        if (isValidLicensePlate(plate) && plate !== null) {
+        if (plate !== null && isValidLicensePlate(plate)) {
             setPlateError('');
 
             let availableSpot = null;
