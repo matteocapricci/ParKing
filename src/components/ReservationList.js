@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Tabs, Tab, Box, Typography, Card, CardContent, CardActions, Button, Paper, Chip, Divider } from '@mui/material';
+import { Tabs, Tab, Box, Typography, Card, CardContent, CardActions, Paper, Chip, Divider } from '@mui/material';
 import theme from '../style/palette';
 import DeleteReservationDialog from './DeleteReservationDialog';
 import { resultCardListStyle } from '../style/styles';
@@ -23,7 +23,7 @@ const ReservationList = ({ reservations, deleteFunction, deleteCommentFunction, 
         filterReservations();
     }, [tabIndex, reservations]);
 
-    const handleChangeTab = (event, newIndex) => {
+    const handleChangeTab = ( newIndex) => {
         setTabIndex(newIndex);
     };
 
@@ -58,7 +58,6 @@ const ReservationList = ({ reservations, deleteFunction, deleteCommentFunction, 
         addCommentFunction(reservation, text, rating);
     };
 
-    // Separate ongoing and future reservations
     const sortedReservations = [
         ...filteredReservations.filter(isOngoing),
         ...filteredReservations.filter(reservation => !isOngoing(reservation))

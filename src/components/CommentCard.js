@@ -1,11 +1,10 @@
-// src/components/CommentCard.js
 import React from 'react';
 import { Card, CardContent, Typography, Avatar, Box } from '@mui/material';
 import CarRating from './CarRating'; 
 import { styled } from '@mui/system';
 import theme from '../style/palette';
 
-const StyledCard = styled(Card)(({ theme }) => ({
+const StyledCard = styled(Card)(() => ({
     borderRadius: '12px',
     backgroundColor: '#f8f7b1', 
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
@@ -15,19 +14,19 @@ const StyledCard = styled(Card)(({ theme }) => ({
     padding: '10px',
 }));
 
-const AvatarWrapper = styled(Box)(({ theme }) => ({
+const AvatarWrapper = styled(Box)(() => ({
     display: 'flex',
     alignItems: 'center',
     marginBottom: '10px',
 }));
 
-const AvatarStyled = styled(Avatar)(({ theme }) => ({
+const AvatarStyled = styled(Avatar)(() => ({
     width: 50,
     height: 50,
     marginRight: '15px',
 }));
 
-const CommentText = styled(Typography)(({ theme }) => ({
+const CommentText = styled(Typography)(() => ({
     marginTop: '10px',
     marginBottom: '10px',
     fontSize: '16px',
@@ -48,7 +47,7 @@ const CommentCard = ({ comment, username, photoUrl }) => {
                 <AvatarWrapper>
                     <Avatar
                         alt={username || "User"}
-                        src={photoUrl || '/default-profile.png'} //aggiusta con img del utente
+                        src={photoUrl || '/default-profile.png'} 
                         sx={{ width: 40, height: 40, marginRight:'10px', border: `2px solid ${theme.palette.secondary.dark}` }}
                     />
                     <Box>

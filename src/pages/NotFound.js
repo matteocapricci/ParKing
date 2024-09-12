@@ -2,21 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import CenterLogo from '../components/CenterLogo.js';
 import PageContainer from '../components/PageContainer.js';
 
 const NotFound = () => {
-    const containerStyle = {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        textAlign: 'center',
-        backgroundColor: '#f8f9fa',
-        color: '#343a40' 
-    };
-
+    
     const headingStyle = {
         fontSize: '4rem',
         margin: '0',

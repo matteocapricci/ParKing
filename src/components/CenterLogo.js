@@ -2,7 +2,7 @@ import {
     textStyle,
     displayStyle,
 } from '../style/styles.js';
-function CenterLogo({name, size, variant, handleClick}) {
+function CenterLogo() {
     return (
         <div> 
             <div style={displayStyle}>

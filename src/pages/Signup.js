@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import theme from '../style/palette';
@@ -25,13 +25,11 @@ const Signup = () => {
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // Error message state
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(''); 
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
-  // New state variables for required field errors
   const [nameError, setNameError] = useState('');
   const [surnameError, setSurnameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -41,14 +39,14 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(''); // Reset error message
-    setNameError(''); // Reset name error
-    setSurnameError(''); // Reset surname error
-    setPasswordError(''); // Reset password error
+    setErrorMessage(''); 
+    setNameError('');
+    setSurnameError('');
+    setPasswordError(''); 
     
     let hasError = false;
 
-    // Custom validation for required fields
+
     if (!name.trim()) {
       setNameError('Name is required.');
       hasError = true;
@@ -72,7 +70,6 @@ const Signup = () => {
       hasError = true;
     }
 
-    // Prevent form submission if there are errors
     if (hasError) {
       return;
     }

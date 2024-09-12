@@ -16,7 +16,6 @@ import { Dialog, DialogTitle, DialogContent } from '@mui/material';
 import CustomIconButton from './CustomIconButton.js';
 import CloseIcon from '@mui/icons-material/Close';
 import ReservationReviewDialog from './ReservationReviewDialog.js';
-import { useNavigate } from 'react-router-dom';
 
 const ReservationReview = () => {
 

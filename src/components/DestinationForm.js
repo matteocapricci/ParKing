@@ -65,16 +65,15 @@ const DestinationForm = () => {
         marginBottom: '20px'
     };
 
-    // Function to handle search suggestions
     const handleSearch = (query) => {
-        if (query.length > 2) { // Only search if there are at least 3 characters
-            const apiKey = 'e31b8aeff2e348c5871cb9aec2b7739f'; // Replace with your Geoapify API key
+        if (query.length > 2) { 
+            const apiKey = 'e31b8aeff2e348c5871cb9aec2b7739f'; 
             const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=${apiKey}`;
 
             fetch(url)
                 .then((response) => response.json())
                     .then((data) => {
-                        setSuggestions(data.features); // Set suggestions from Geoapify data schema
+                        setSuggestions(data.features); 
                     })
                     .catch((error) => {
                         console.error('Error searching for city:', error);
@@ -84,7 +83,6 @@ const DestinationForm = () => {
         }
     };
 
-    // Function to handle suggestion selection
     const handleSelectSuggestion = (suggestion) => {
         dispatch(setDestination(suggestion.properties.formatted));
         dispatch(setLatitude(suggestion.properties.lat));
@@ -103,7 +101,6 @@ const DestinationForm = () => {
         }
     }
 
-    // Function called when the form is submitted
     const handleSave = async (event) => {
         event.preventDefault();
         setDestinationError('');
@@ -129,10 +126,10 @@ const DestinationForm = () => {
         } else if (new Date(dateIn) > new Date(dateOut)) {
             setDateError("Check-in date cannot be later than check-out date");
             hasError = true;
-        } /*else if (new Date() > new Date(dateIn)) {
+        } else if (new Date() > new Date(dateIn)) {
             setDateError("Check-in date cannot be before then NOW!");
             hasError = true;
-        }*/
+        }
 
         if (hasError) {
             return;
@@ -170,27 +167,26 @@ const DestinationForm = () => {
             value={destination} 
             onChange={(e) => {
                 dispatch(setDestination(e.target.value));
-                handleSearch(e.target.value); // Search suggestions while typing
+                handleSearch(e.target.value);
             }} 
             required 
             style={input} 
             />
             {destinationError && <p style={error}>{destinationError}</p>}
 
-            {/* Display suggestions */}
             {suggestions.length > 0 && (
             <ul style={{
                 listStyleType: 'none',
                 padding: '0',
                 margin: '4px 0',
-                border: '1px solid #ccc', // Outer border
+                border: '1px solid #ccc', 
                 borderRadius: '4px',
                 backgroundColor: 'white',
                 position: 'absolute',
                 width: '100%',
-                maxHeight: '150px', // Max height for list
-                overflowY: 'auto', // Enable vertical scrolling
-                boxSizing: 'border-box', // Ensure padding doesn't affect width
+                maxHeight: '150px',
+                overflowY: 'auto', 
+                boxSizing: 'border-box',
                 zIndex: 1000,
                 color: theme.palette.primary.main
             }}>
@@ -202,7 +198,7 @@ const DestinationForm = () => {
                     padding: '8px',
                     cursor: 'pointer',
                     borderBottom: index !== suggestions.length - 1 ? '1px solid #ccc' : 'none',
-                    border: '1px solid #ccc', // Inner border for each suggestion
+                    border: '1px solid #ccc', 
                     }}
                 >
                     {suggestion.properties.formatted}

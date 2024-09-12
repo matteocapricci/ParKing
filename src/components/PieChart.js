@@ -12,7 +12,7 @@ const PieChart = ({ data }) => {
                     padAngle={0.7}
                     cornerRadius={3}
                     activeOuterRadiusOffset={8}
-                    colors={{ scheme: 'nivo' }} // Ensure this scheme exists or use custom colors
+                    colors={{ scheme: 'nivo' }} 
                     borderWidth={1}
                     borderColor={{
                         from: 'color',

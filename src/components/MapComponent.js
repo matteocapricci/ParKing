@@ -5,7 +5,7 @@ import { faCar } from '@fortawesome/free-solid-svg-icons';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import theme from '../style/palette.js';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 delete L.Icon.Default.prototype._getIconUrl;
 

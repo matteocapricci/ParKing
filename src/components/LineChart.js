@@ -1,6 +1,5 @@
 import { ResponsiveLine } from '@nivo/line';
 import { Box } from '@mui/material';
-import theme from '../style/palette';
 
 const LineChart = ({ data }) => {
 

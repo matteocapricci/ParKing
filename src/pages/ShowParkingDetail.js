@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Header from "../components/Header.js";
 import Footer from "../components/Footer.js";
 import MapComponent from "../components/MapComponent.js";
@@ -7,11 +7,10 @@ import ParkingCard from "../components/ParkingCard.js";
 import { useSelector } from "react-redux";
 import BackButton from "../components/BackButton.js";
 import ReservationReview from "../components/ReservationReview.js";
-import { get_docs_by_attribute, load_docs_by_attributes, load_docs } from '../services/firebase/crudOp.js';
+import { get_docs_by_attribute, load_docs_by_attributes } from '../services/firebase/crudOp.js';
 import theme from '../style/palette.js';
 import CommentCard from '../components/CommentCard.js';
 import { resultCommentListStyle } from '../style/styles';
-import CustomButton from '../components/CustomButton.js';
 import { Box, Typography, Card, Paper, Divider } from '@mui/material';
 
 

@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import {useNavigate, useLocation} from "react-router-dom";
 import { useEffect } from "react";
 import { headerStyle, buttonGroupStyle} from '../style/styles.js';
-import { useContext } from "react";
 import useAuth from '../hooks/useAuth';
 import CustomAccountButton from "./CustomAccountButton.js";
 import theme from "../style/palette.js";

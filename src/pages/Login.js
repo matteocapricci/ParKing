@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import theme from '../style/palette';
@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // Error message state
+  const [errorMessage, setErrorMessage] = useState(''); 
   const [emailError, setEmailError] = useState('');
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -30,7 +30,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setErrorMessage(''); // Reset error message
+    setErrorMessage('');
 
     if (!isSigningIn) {
       setIsSigningIn(true);
@@ -48,7 +48,7 @@ const Login = () => {
 
   const handleGoogleSignIn = (e) => {
     e.preventDefault();
-    setErrorMessage(''); // Reset error message
+    setErrorMessage('');
 
     if (!isSigningIn) {
       setIsSigningIn(true);

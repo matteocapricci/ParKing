@@ -65,8 +65,8 @@ const ImagesUploader = ({ props, text, maxImages, minImages }) => {
                 boxShadow: `1px 1px 2px ${theme.palette.primary.main}`,
                 padding: '20px',
                 textAlign: 'center',
-                borderRadius: '15px', // Rounded corners
-                overflow: 'hidden' // Ensures that the rounded corners are respected
+                borderRadius: '15px',
+                overflow: 'hidden' 
             }}>
                 <div style={{ fontSize: 'larger', fontWeight: 'bold' }}>{text}</div>
                 <br />
@@ -118,7 +118,7 @@ const imageStyle = {
     borderRadius: '8px',
     objectFit: 'cover',
     display: 'block',
-    margin: '0 auto' // Center image within its container
+    margin: '0 auto' 
 };
 
 export default ImagesUploader;

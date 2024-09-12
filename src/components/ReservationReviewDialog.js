@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../services/firebase/confFirebase.js';
 import theme from '../style/palette.js';
-import { error, input } from '../style/styles.js';
+import { error } from '../style/styles.js';
 import { store_by_transaction } from '../services/firebase/persistenceManager.js';
 import { setCurrentPage } from '../store/App.js';
 
