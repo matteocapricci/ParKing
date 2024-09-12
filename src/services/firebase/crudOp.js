@@ -380,7 +380,6 @@ export const load_parkingNearSerchedPosition = async function ( latitude_attribu
             }
         }
 
-        console.log(availableParking);
 
         let uniqueAvailableParking = availableParking.reduce((acc, current) => {
             let found = acc.find(item => item.doc_id === current.doc_id);
@@ -434,9 +433,10 @@ export const store_by_transaction = async function (obj, collectionName, error =
         await runTransaction(db, async (transaction) => {
             const reservationRef = doc(collection(db, collectionName));
 
-            // Inserire la nuova prenotazione all'interno della transazione
             transaction.set(reservationRef, obj);
         });
+
+        return true;
 
     } catch (e) {
         return false;

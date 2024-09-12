@@ -20,6 +20,10 @@ function ParkingCardResultList() {
         }
     }, [parkings]);
 
+    setTimeout(() => {
+        setLoading(false);
+    }, 5000);
+
     return (
         <div>
             {loading ? (

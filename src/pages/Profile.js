@@ -218,7 +218,7 @@ const Profile = () => {
     const handleDeleteReservation = async (selectedReservation) => { 
         
         try{
-            await delete_doc_by_attribute("Reservations", "code", selectedReservation.code);
+            await delete_doc("Reservations", selectedReservation.doc_id);
            
             let newReservations = reservations.filter(item => item !== selectedReservation);
             setReservations(newReservations); 

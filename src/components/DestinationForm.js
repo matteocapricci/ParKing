@@ -129,10 +129,10 @@ const DestinationForm = () => {
         } else if (new Date(dateIn) > new Date(dateOut)) {
             setDateError("Check-in date cannot be later than check-out date");
             hasError = true;
-        } /*else if (new Date() > new Date(dateIn)) {
+        } else if (new Date() > new Date(dateIn)) {
             setDateError("Check-in date cannot be before then NOW!");
             hasError = true;
-        }*/
+        }
 
         if (hasError) {
             return;
