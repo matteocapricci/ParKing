@@ -71,12 +71,7 @@ const MapComponent = () => {
               <p style={{color: theme.palette.primary.main}}> 
                 <b>{parking.name}</b> <br/>
                 {parking.location.address} <br/>
-                <div style={ratingStyle}>
-                  {[...Array(Math.floor(parking.avg_rating))].map((_, i) => (
-                      <FontAwesomeIcon icon={faCar} style={carValueStyle} key={i} />
-                  ))}
-                  {parking.avg_rating.toFixed(1)}
-                </div>
+                <CarRating rating={parking.avg_rating} />
               </p>
             </Popup>
           </Marker>

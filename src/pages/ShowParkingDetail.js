@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import React, { useState } from 'react';
 import Header from "../components/Header.js";
 import Footer from "../components/Footer.js";
 import MapComponent from "../components/MapComponent.js";

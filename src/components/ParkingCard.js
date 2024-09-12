@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight} from '@fortawesome/free-solid-svg-icons';
 import theme from '../style/palette.js';
@@ -48,8 +48,6 @@ const ParkingCard = ({ id, name, address, photo_urls, description, services, rat
     };
 
     const handleClick = async (event) => {
-
-        console.log(parking)
 
         if (parking === null){
             event.preventDefault();

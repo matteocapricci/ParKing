@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faLocationDot, faCalendarDay, faCalendarPlus, faMotorcycle, faCar, faTruck, faWandSparkles } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -9,7 +9,7 @@ import {
     error
 } from '../style/styles.js';
 import theme from '../style/palette.js';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { setDestination, setDateIn, setDateOut, setTransport, setLatitude, setLongitude, setSearchedParkings, setNewSearch } from '../store/App.js';
 import { load_parkingNearSerchedPosition } from '../services/firebase/persistenceManager.js';

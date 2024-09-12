@@ -338,12 +338,11 @@ export const load_parkingNearSerchedPosition = async function ( latitude_attribu
             }
         });
 
+        console.log(result);
         let availableParking = [];
 
         for (let res of result) {
             for (let parkSlot of res.parkingSlots) {
-                console.log(res.doc_id);
-                console.log(parkSlot.name);
                 let linkedReservations = await load_docs_by_attributes("Reservations", {"parkingId": res.doc_id, "parkingSpot.name": parkSlot.name});
 
                 console.log(linkedReservations);
@@ -363,7 +362,7 @@ export const load_parkingNearSerchedPosition = async function ( latitude_attribu
                         }
                     }
 
-                    if (isAvailable && parkSlot.size === capitalizedSizeAttribute ) {
+                    if ((isAvailable && parkSlot.size === capitalizedSizeAttribute) || capitalizedSizeAttribute === "Any" ) {
                         parkSlot.isAvailable = true;
                         availableParking.push({ ...res, parkingSlots: [parkSlot] });
                     }
@@ -380,6 +379,7 @@ export const load_parkingNearSerchedPosition = async function ( latitude_attribu
                 }
             }
         }
+
 
         let uniqueAvailableParking = availableParking.reduce((acc, current) => {
             let found = acc.find(item => item.doc_id === current.doc_id);
@@ -433,9 +433,10 @@ export const store_by_transaction = async function (obj, collectionName, error =
         await runTransaction(db, async (transaction) => {
             const reservationRef = doc(collection(db, collectionName));
 
-            // Inserire la nuova prenotazione all'interno della transazione
             transaction.set(reservationRef, obj);
         });
+
+        return true;
 
     } catch (e) {
         return false;
