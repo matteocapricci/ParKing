@@ -8,8 +8,6 @@ const initialState = {
     lat: '',
     lon:''
 };
-
-// Creazione dello slice per il form
 export const updateDestinationFormSlice = createSlice({
     name: 'destinationForm',
     initialState,

@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import theme from '../style/palette.js';
 import { useSelector } from "react-redux";
+import CarRating from './CarRating.js';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
